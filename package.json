@@ -1,16 +1,22 @@
 {
-  "name": "iab-gppstring",
+  "name": "gppstring",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "prebuild": "rm -rf lib",
+    "build": "babel src -d lib --ignore **/*.test.js"
+  },
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.19.3",
     "@babel/core": "^7.20.2",
     "@babel/preset-env": "^7.20.2",
     "babel-jest": "^29.3.1",
     "jest": "^29.3.1"
   },
-  "scripts": {
-    "test": "jest"
-  },
-  "type": "module"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paginar/gppstring.git"
+  }
 }
