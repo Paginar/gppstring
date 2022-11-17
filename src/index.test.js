@@ -1,10 +1,5 @@
 //const t = require("./");
-import {
-  Boolean,
-  IntegerFixedLength,
-  RangeFibonacci,
-  fibonacciEncoding,
-} from "./";
+import { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield } from "./";
 
 test("Initialize Boolean to true", () => {
   const bool = new Boolean.Builder().setValue(true).build();
@@ -43,22 +38,6 @@ test("Initialize IntegerFixedLength to 2000,10 must throw", () => {
   }).toThrow();
 });
 
-test("FibonacciEncoding for 1", () => {
-  expect(fibonacciEncoding(1)).toBe("11");
-});
-
-test("FibonacciEncoding for 2", () => {
-  expect(fibonacciEncoding(2)).toBe("011");
-});
-
-test("FibonacciEncoding for 3", () => {
-  expect(fibonacciEncoding(3)).toBe("0011");
-});
-
-test("FibonacciEncoding for 2645", () => {
-  expect(fibonacciEncoding(2645)).toBe("100100001000000011");
-});
-
 test("RangeFibonacci of single value 2", () => {
   expect(new RangeFibonacci.Builder().addSingle(2).build().encode()).toBe(
     "0000000000010011"
@@ -81,4 +60,33 @@ test("RangeFibonacci of [3,5,6,7,8] 1 single value: 3, 1 group values: 5-8", () 
   expect(
     new RangeFibonacci.Builder().addSingle(3).addGroup(5, 8).build().encode()
   ).toBe("0000000000100001110110011");
+});
+
+test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=0", () => {
+  expect(
+    new NBitfield.Builder().setNbitSize(2).addNBit(0).build().encode()
+  ).toBe("00");
+});
+
+test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=2", () => {
+  expect(
+    new NBitfield.Builder().setNbitSize(2).addNBit(2).build().encode()
+  ).toBe("10");
+});
+
+test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=5, must throw", () => {
+  expect(() => {
+    integer.encode();
+  }).toThrow();
+});
+
+test("Create a NBitfield (NBitSize=2,numBits=2), with values Bit1=2,Bit2=1", () => {
+  expect(
+    new NBitfield.Builder()
+      .setNbitSize(2)
+      .addNBit(2)
+      .addNBit(1)
+      .build()
+      .encode()
+  ).toBe("1001");
 });

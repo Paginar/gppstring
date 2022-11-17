@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "lib/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "prebuild": "rm -rf lib",
     "build": "babel src -d lib --ignore **/*.test.js"
   },

@@ -1,3 +1,7 @@
+function dec2bin(dec) {
+  return (dec >>> 0).toString(2);
+}
+
 function fibonacciEncoding(n) {
   const fib = new Array(n);
 
@@ -106,7 +110,7 @@ class IntegerFixedLength {
   }
 
   encode() {
-    const binString = this.#dec2bin(this.#value);
+    const binString = dec2bin(this.#value);
     if (binString.length <= this.#length)
       return binString.padStart(this.#length, "0");
     else
@@ -118,10 +122,6 @@ class IntegerFixedLength {
   // decode() {
   //   return this.#value;
   // }
-
-  #dec2bin(dec) {
-    return (dec >>> 0).toString(2);
-  }
 }
 
 class RangeFibonacci {
@@ -197,4 +197,55 @@ class RangeFibonacci {
   }
 }
 
-export { Boolean, IntegerFixedLength, RangeFibonacci, fibonacciEncoding };
+class NBitfield {
+  #nBits = [];
+  #nBitSize = null;
+
+  static Builder = class {
+    #nBits = [];
+    #nBitSize = null;
+
+    setNbitSize(nBitSize) {
+      this.#nBitSize = nBitSize;
+      return this;
+    }
+
+    addNBit(value) {
+      const binString = dec2bin(value);
+      if (binString.length <= this.#nBitSize)
+        this.#nBits.push(binString.padStart(this.#nBitSize, "0"));
+      else
+        throw `Truncation error, nBitSize must be larger than ${
+          binString.length
+        }. Currently it is set to ${this.#nBitSize}`;
+      return this;
+    }
+
+    build() {
+      const nBitfield = new NBitfield(this.#nBitSize, this.#nBits);
+      return nBitfield;
+    }
+  };
+
+  constructor(nBitSize, nBits) {
+    this.#nBitSize = nBitSize;
+    this.#nBits = nBits;
+  }
+
+  toString() {
+    return JSON.stringify({
+      nBitSize: this.#nBitSize,
+      nBits: this.#nBits,
+    });
+  }
+
+  encode() {
+    let encodedRange = "";
+    this.#nBits.forEach((item, index) => {
+      // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
+      encodedRange += item;
+    });
+    return encodedRange;
+  }
+}
+export { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield };
