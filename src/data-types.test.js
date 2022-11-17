@@ -1,5 +1,10 @@
 //const t = require("./");
-import { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield } from "./";
+import {
+  Boolean,
+  IntegerFixedLength,
+  RangeFibonacci,
+  NBitfield,
+} from "./data-types";
 
 test("Initialize Boolean to true", () => {
   const bool = new Boolean.Builder().setValue(true).build();
