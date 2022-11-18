@@ -101,7 +101,9 @@ class IntegerFixedLength {
 //
 // IntegerFibonacci
 //
-
+// Integer encoded using Fibonacci encoding
+// See “About Fibonacci Encoding” for more detail
+// https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
 class IntegerFibonacci {
   #value = null;
 
@@ -140,6 +142,8 @@ class IntegerFibonacci {
 //
 // StringFixedLength
 //
+// A fixed amount of bit representing a string. The character’s ASCII integer ID is subtracted by 65 and encoded into an int(6).
+// Example: int(6) “101010” represents integer 47 + 65 = char “h”
 
 class StringFixedLength {
   #value = null;
@@ -178,6 +182,50 @@ class StringFixedLength {
       encodedString += int6.encode();
     }
     return encodedString;
+  }
+}
+
+//
+// Datetime
+//
+// A datetime is encoded as a 36 bit integer representing the 1/10th seconds since January 01 1970 00:00:00 UTC.
+// Example JavaScript representation: Math.round((new Date()).getTime()/100)
+
+class Datetime {
+  #value = null;
+
+  static Builder = class {
+    #value = null;
+
+    setValue(value) {
+      if (!value instanceof Date) {
+        throw "value param must be an Date";
+      }
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      return new Datetime(this.#value);
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    let int36 = new IntegerFixedLength.Builder()
+      .setLength(36)
+      .setValue(Math.round(this.#value.getTime() / 100))
+      .build();
+    return int36.encode();
   }
 }
 
@@ -350,6 +398,7 @@ export {
   IntegerFixedLength,
   IntegerFibonacci,
   StringFixedLength,
+  Datetime,
   RangeFibonacci,
   NBitfield,
 };

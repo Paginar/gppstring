@@ -4,6 +4,7 @@ import {
   IntegerFixedLength,
   IntegerFibonacci,
   StringFixedLength,
+  Datetime,
   RangeFibonacci,
   NBitfield,
 } from "./data-types";
@@ -110,6 +111,24 @@ test("StringFixedLength of value 'k'", () => {
 test("StringFixedLength of value 'kkk'", () => {
   expect(new StringFixedLength.Builder().setValue("kkk").build().encode()).toBe(
     "101010101010101010"
+  );
+});
+
+//
+// Datetime
+//
+
+test("Datetime of value January 01 1970 00:00:00 UTC", () => {
+  let date = new Date(0);
+  expect(new Datetime.Builder().setValue(date).build().encode()).toBe(
+    "000000000000000000000000000000000000"
+  );
+});
+
+test("Datetime of value January 01 2022 00:00:00 UTC", () => {
+  let date = new Date(2022, 0, 1);
+  expect(new Datetime.Builder().setValue(date).build().encode()).toBe(
+    "001111010010000111011010010011100000"
   );
 });
 
