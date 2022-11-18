@@ -5,6 +5,7 @@ import {
   IntegerFibonacci,
   StringFixedLength,
   Datetime,
+  RangeInteger,
   RangeFibonacci,
   NBitfield,
 } from "./data-types";
@@ -130,6 +131,34 @@ test("Datetime of value January 01 2022 00:00:00 UTC", () => {
   expect(new Datetime.Builder().setValue(date).build().encode()).toBe(
     "001111010010000111011010010011100000"
   );
+});
+
+//
+// RangeInteger
+//
+
+test("RangeInteger of single value 2", () => {
+  expect(new RangeInteger.Builder().addSingle(2).build().encode()).toBe(
+    "00000000000100000000000000010"
+  );
+});
+
+test("RangeInteger of 2 single values: 2, 6", () => {
+  expect(
+    new RangeInteger.Builder().addSingle(2).addSingle(6).build().encode()
+  ).toBe("0000000000100000000000000001000000000000000100");
+});
+
+test("RangeInteger of 1 group values: 5-6", () => {
+  expect(new RangeInteger.Builder().addGroup(5, 6).build().encode()).toBe(
+    "000000000001100000000000001010000000000000001"
+  );
+});
+
+test("RangeInteger of [3,5,6,7,8] 1 single value: 3, 1 group values: 5-8", () => {
+  expect(
+    new RangeInteger.Builder().addSingle(3).addGroup(5, 8).build().encode()
+  ).toBe("00000000001000000000000000011100000000000000100000000000000011");
 });
 
 //

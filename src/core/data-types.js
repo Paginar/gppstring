@@ -104,6 +104,7 @@ class IntegerFixedLength {
 // Integer encoded using Fibonacci encoding
 // See “About Fibonacci Encoding” for more detail
 // https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
+
 class IntegerFibonacci {
   #value = null;
 
@@ -230,6 +231,103 @@ class Datetime {
 }
 
 //
+// RangeInteger
+//
+
+class RangeInteger {
+  #items = [];
+  #SINGLE = "0";
+  #GROUP = "1";
+
+  static Builder = class {
+    #items = [];
+    #lastValue = 0;
+    #SINGLE = "0";
+    #GROUP = "1";
+
+    addSingle(value) {
+      if (!Number.isInteger(value)) {
+        throw "value param must be an integer";
+      }
+      if (value <= this.#lastValue) {
+        throw "Values must be added in sorted ascending order";
+      }
+      this.#items.push({ type: this.#SINGLE, value: value });
+      this.#lastValue = value;
+      return this;
+    }
+
+    addGroup(fromValue, toValue) {
+      if (!Number.isInteger(fromValue)) {
+        throw "fromValue param must be an integer";
+      }
+      if (!Number.isInteger(toValue)) {
+        throw "toValue param must be an integer";
+      }
+      if (fromValue >= toValue) {
+        throw "fromValue must be lower than toValue";
+      }
+      if (fromValue <= this.#lastValue) {
+        throw "Values must be added in sorted ascending order";
+      }
+      this.#items.push({ type: this.#GROUP, fromValue, toValue });
+      this.#lastValue = toValue;
+      return this;
+    }
+
+    build() {
+      return new RangeInteger(this.#items);
+    }
+  };
+
+  constructor(items) {
+    this.#items = items;
+  }
+
+  toString() {
+    return JSON.stringify({
+      items: this.#items,
+    });
+  }
+
+  encode() {
+    let encodedRange = "";
+    encodedRange += new IntegerFixedLength.Builder()
+      .setLength(12)
+      .setValue(this.#items.length)
+      .build()
+      .encode();
+    let lastValue = 0;
+    this.#items.forEach((item, index) => {
+      if (item.type === this.#SINGLE) {
+        encodedRange += this.#SINGLE;
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.value - lastValue)
+          .build()
+          .encode();
+
+        lastValue = item.value;
+      } else if (item.type === this.#GROUP) {
+        encodedRange += this.#GROUP;
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.fromValue - lastValue)
+          .build()
+          .encode();
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.toValue - item.fromValue)
+          .build()
+          .encode();
+        lastValue = item.toValue;
+      }
+    });
+    return encodedRange;
+  }
+}
+
+//
 // RangeFibonacci
 //
 
@@ -300,7 +398,6 @@ class RangeFibonacci {
 
     let lastValue = 0;
     this.#items.forEach((item, index) => {
-      // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
       if (item.type === this.#SINGLE) {
         encodedRange += this.#SINGLE;
         encodedRange += fibonacciEncoding(item.value - lastValue);
@@ -387,7 +484,6 @@ class NBitfield {
   encode() {
     let encodedRange = "";
     this.#nBits.forEach((item, index) => {
-      // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
       encodedRange += item.encode();
     });
     return encodedRange;
@@ -399,6 +495,7 @@ export {
   IntegerFibonacci,
   StringFixedLength,
   Datetime,
+  RangeInteger,
   RangeFibonacci,
   NBitfield,
 };
