@@ -1,7 +1,11 @@
 import { dec2bin, isOverflowed, fibonacciEncoding } from "./utils";
 
+//
+// Boolean
+//
+
 class Boolean {
-  #value = false;
+  #value = null;
 
   static Builder = class {
     #value = false;
@@ -31,11 +35,11 @@ class Boolean {
     if (this.#value) return "1";
     else return "0";
   }
-
-  // decode() {
-  //   return this.#value;
-  // }
 }
+
+//
+// IntegerFixedLength
+//
 
 class IntegerFixedLength {
   #value = null;
@@ -92,11 +96,94 @@ class IntegerFixedLength {
     const binString = dec2bin(this.#value);
     return binString.padStart(this.#length, "0");
   }
-
-  // decode() {
-  //   return this.#value;
-  // }
 }
+
+//
+// IntegerFibonacci
+//
+
+class IntegerFibonacci {
+  #value = null;
+
+  static Builder = class {
+    #value = 0;
+
+    setValue(value) {
+      if (!Number.isInteger(value) && value >= 0) {
+        throw "value param must be a non-negative integer";
+      }
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      const integer = new IntegerFibonacci(this.#value);
+      return integer;
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    return fibonacciEncoding(this.#value);
+  }
+}
+
+//
+// StringFixedLength
+//
+
+class StringFixedLength {
+  #value = null;
+
+  static Builder = class {
+    #value = "";
+
+    setValue(value) {
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      return new StringFixedLength(this.#value);
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    let encodedString = "";
+    let int6;
+    for (let char of this.#value) {
+      int6 = new IntegerFixedLength.Builder()
+        .setLength(6)
+        .setValue(char.charCodeAt(0) - 65)
+        .build();
+      encodedString += int6.encode();
+    }
+    return encodedString;
+  }
+}
+
+//
+// RangeFibonacci
+//
 
 class RangeFibonacci {
   #items = [];
@@ -181,6 +268,10 @@ class RangeFibonacci {
   }
 }
 
+//
+// NBitField
+//
+
 class NBitfield {
   #nBits = null;
   #nBitSize = null;
@@ -254,4 +345,11 @@ class NBitfield {
     return encodedRange;
   }
 }
-export { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield };
+export {
+  Boolean,
+  IntegerFixedLength,
+  IntegerFibonacci,
+  StringFixedLength,
+  RangeFibonacci,
+  NBitfield,
+};
