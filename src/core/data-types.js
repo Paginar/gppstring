@@ -1,50 +1,10 @@
-function dec2bin(dec) {
-  return (dec >>> 0).toString(2);
-}
-
-function fibonacciEncoding(n) {
-  const fib = new Array(n);
-
-  function largestFiboLessOrEqual(num) {
-    fib[0] = 1;
-    fib[1] = 2;
-    let i;
-    // eslint-disable-next-line no-plusplus
-    for (i = 2; fib[i - 1] <= num; i++) {
-      fib[i] = fib[i - 1] + fib[i - 2];
-    }
-    return i - 2;
-  }
-
-  function fibonacciEncode(number) {
-    const index = largestFiboLessOrEqual(number);
-    let num = number;
-    const codeword = new Array(index + 3);
-    let i = index;
-    while (num > 0) {
-      codeword[i] = "1";
-      num -= fib[i];
-      i -= 1;
-      while (i >= 0 && fib[i] > num) {
-        codeword[i] = "0";
-        i -= 1;
-      }
-    }
-    // Additional '1' bit
-    codeword[index + 1] = "1";
-    const string = codeword.join("");
-    // Return pointer to codeword
-    return string;
-  }
-  const code = fibonacciEncode(n);
-  return code;
-}
+import { dec2bin, isOverflowed, fibonacciEncoding } from "./utils";
 
 class Boolean {
-  #value = null;
+  #value = false;
 
   static Builder = class {
-    #value = null;
+    #value = false;
 
     setValue(value) {
       this.#value = !!value;
@@ -82,18 +42,37 @@ class IntegerFixedLength {
   #length = null;
 
   static Builder = class {
-    #value = null;
-    #length = null;
+    #value = 0;
+    #length = 1;
 
-    setValue(value, length) {
-      this.#value = value;
+    setLength(length = 1) {
+      if (!Number.isInteger(length) && length > 1) {
+        throw "length param must be a positive integer";
+      }
+      this.#checkIfTruncated(this.#value, length);
       this.#length = length;
+      return this;
+    }
+
+    setValue(value) {
+      if (!Number.isInteger(value) && value >= 0) {
+        throw "value param must be a non-negative integer";
+      }
+      this.#checkIfTruncated(value, this.#length);
+      this.#value = value;
       return this;
     }
 
     build() {
       const integer = new IntegerFixedLength(this.#value, this.#length);
       return integer;
+    }
+
+    #checkIfTruncated(value, length) {
+      const binString = dec2bin(value);
+      if (isOverflowed(value, length)) {
+        throw `Truncation error, length must be larger than ${binString.length} for value ${value}`;
+      }
     }
   };
 
@@ -111,12 +90,7 @@ class IntegerFixedLength {
 
   encode() {
     const binString = dec2bin(this.#value);
-    if (binString.length <= this.#length)
-      return binString.padStart(this.#length, "0");
-    else
-      throw `Truncation error, length must be larger than ${
-        this.#length
-      } for value ${this.#value}`;
+    return binString.padStart(this.#length, "0");
   }
 
   // decode() {
@@ -131,13 +105,16 @@ class RangeFibonacci {
 
   static Builder = class {
     #items = [];
-    #lastValue = null;
+    #lastValue = 0;
     #SINGLE = "0";
     #GROUP = "1";
 
     addSingle(value) {
+      if (!Number.isInteger(value)) {
+        throw "value param must be an integer";
+      }
       if (value <= this.#lastValue) {
-        throw "values must be added in sorted ascending order";
+        throw "Values must be added in sorted ascending order";
       }
       this.#items.push({ type: this.#SINGLE, value: value });
       this.#lastValue = value;
@@ -145,11 +122,17 @@ class RangeFibonacci {
     }
 
     addGroup(fromValue, toValue) {
+      if (!Number.isInteger(fromValue)) {
+        throw "fromValue param must be an integer";
+      }
+      if (!Number.isInteger(toValue)) {
+        throw "toValue param must be an integer";
+      }
       if (fromValue >= toValue) {
         throw "fromValue must be lower than toValue";
       }
       if (fromValue <= this.#lastValue) {
-        throw "values must be added in sorted ascending order";
+        throw "Values must be added in sorted ascending order";
       }
       this.#items.push({ type: this.#GROUP, fromValue, toValue });
       this.#lastValue = toValue;
@@ -175,7 +158,8 @@ class RangeFibonacci {
   encode() {
     let encodedRange = "";
     encodedRange += new IntegerFixedLength.Builder()
-      .setValue(this.#items.length, 12)
+      .setLength(12)
+      .setValue(this.#items.length)
       .build()
       .encode();
 
@@ -198,26 +182,48 @@ class RangeFibonacci {
 }
 
 class NBitfield {
-  #nBits = [];
+  #nBits = null;
   #nBitSize = null;
 
   static Builder = class {
     #nBits = [];
-    #nBitSize = null;
+    #nBitSize = 1;
+    #numBits = 0;
 
     setNbitSize(nBitSize) {
+      if (!Number.isInteger(nBitSize) && nBitSize > 0) {
+        throw "nBitSize param must be a positive integer";
+      }
       this.#nBitSize = nBitSize;
       return this;
     }
 
-    addNBit(value) {
-      const binString = dec2bin(value);
-      if (binString.length <= this.#nBitSize)
-        this.#nBits.push(binString.padStart(this.#nBitSize, "0"));
-      else
-        throw `Truncation error, nBitSize must be larger than ${
-          binString.length
-        }. Currently it is set to ${this.#nBitSize}`;
+    setNumBits(numBits) {
+      if (!Number.isInteger(numBits) && numBits > 0) {
+        throw "numBits param must be a positive integer";
+      }
+      this.#numBits = numBits;
+      for (let i = 0; i < numBits; i++) {
+        this.#nBits.push("0".padStart(this.#nBitSize, "0"));
+      }
+      return this;
+    }
+
+    setNBit(position, value) {
+      if (
+        !Number.isInteger(position) &&
+        position >= 1 &&
+        position <= this.#numBits
+      ) {
+        throw `position param must be a positive integer, from 1 to ${
+          this.#numBits
+        }`;
+      }
+      const integerFixedLength = new IntegerFixedLength.Builder()
+        .setLength(this.#nBitSize)
+        .setValue(value)
+        .build();
+      this.#nBits[position - 1] = integerFixedLength;
       return this;
     }
 
@@ -243,7 +249,7 @@ class NBitfield {
     let encodedRange = "";
     this.#nBits.forEach((item, index) => {
       // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
-      encodedRange += item;
+      encodedRange += item.encode();
     });
     return encodedRange;
   }

@@ -17,28 +17,37 @@ test("Initialize Boolean to false", () => {
 });
 
 test("Initialize Boolean to truthy", () => {
-  const bool = new Boolean.Builder().setValue(1).build();
+  const bool = new Boolean.Builder().setValue("false").build();
   expect(bool.encode()).toBe("1");
 });
 
 test("Initialize Boolean to falsey", () => {
-  const bool = new Boolean.Builder().setValue(0).build();
+  const bool = new Boolean.Builder().setValue(undefined).build();
   expect(bool.encode()).toBe("0");
 });
 
-test("Initialize IntegerFixedLength to 0,1", () => {
-  const integer = new IntegerFixedLength.Builder().setValue(0, 1).build();
+test("Initialize IntegerFixedLength to value=0,length=1", () => {
+  const integer = new IntegerFixedLength.Builder()
+    .setLength(1)
+    .setValue(0)
+    .build();
   expect(integer.encode()).toBe("0");
 });
 
-test("Initialize IntegerFixedLength to 2000,11", () => {
-  const integer = new IntegerFixedLength.Builder().setValue(2000, 11).build();
+test("Initialize IntegerFixedLength to value=2000,length=11", () => {
+  const integer = new IntegerFixedLength.Builder()
+    .setLength(11)
+    .setValue(2000)
+    .build();
   expect(integer.encode()).toBe("11111010000");
 });
 
-test("Initialize IntegerFixedLength to 2000,10 must throw", () => {
-  const integer = new IntegerFixedLength.Builder().setValue(2000, 10).build();
+test("Initialize IntegerFixedLength to value=2000,length=10 must throw", () => {
   expect(() => {
+    const integer = new IntegerFixedLength.Builder()
+      .setLength(10)
+      .setValue(2000)
+      .build();
     integer.encode();
   }).toThrow();
 });
@@ -69,19 +78,34 @@ test("RangeFibonacci of [3,5,6,7,8] 1 single value: 3, 1 group values: 5-8", () 
 
 test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=0", () => {
   expect(
-    new NBitfield.Builder().setNbitSize(2).addNBit(0).build().encode()
+    new NBitfield.Builder()
+      .setNbitSize(2)
+      .setNumBits(1)
+      .setNBit(1, 0)
+      .build()
+      .encode()
   ).toBe("00");
 });
 
 test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=2", () => {
   expect(
-    new NBitfield.Builder().setNbitSize(2).addNBit(2).build().encode()
+    new NBitfield.Builder()
+      .setNbitSize(2)
+      .setNumBits(1)
+      .setNBit(1, 2)
+      .build()
+      .encode()
   ).toBe("10");
 });
 
 test("Create a NBitfield (NBitSize=2,numBits=1), with value Bit1=5, must throw", () => {
   expect(() => {
-    integer.encode();
+    new NBitfield.Builder()
+      .setNbitSize(2)
+      .setNumBits(1)
+      .setNBit(1, 5)
+      .build()
+      .encode();
   }).toThrow();
 });
 
@@ -89,8 +113,9 @@ test("Create a NBitfield (NBitSize=2,numBits=2), with values Bit1=2,Bit2=1", () 
   expect(
     new NBitfield.Builder()
       .setNbitSize(2)
-      .addNBit(2)
-      .addNBit(1)
+      .setNumBits(2)
+      .setNBit(1, 2)
+      .setNBit(2, 1)
       .build()
       .encode()
   ).toBe("1001");
