@@ -1,5 +1,5 @@
 export function dec2bin(dec) {
-  return (dec >>> 0).toString(2);
+  return dec.toString(2);
 }
 export function isOverflowed(value, length) {
   return dec2bin(value).length > length;

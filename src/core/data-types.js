@@ -1,7 +1,11 @@
 import { dec2bin, isOverflowed, fibonacciEncoding } from "./utils";
 
+//
+// Boolean
+//
+
 class Boolean {
-  #value = false;
+  #value = null;
 
   static Builder = class {
     #value = false;
@@ -31,11 +35,11 @@ class Boolean {
     if (this.#value) return "1";
     else return "0";
   }
-
-  // decode() {
-  //   return this.#value;
-  // }
 }
+
+//
+// IntegerFixedLength
+//
 
 class IntegerFixedLength {
   #value = null;
@@ -92,11 +96,240 @@ class IntegerFixedLength {
     const binString = dec2bin(this.#value);
     return binString.padStart(this.#length, "0");
   }
-
-  // decode() {
-  //   return this.#value;
-  // }
 }
+
+//
+// IntegerFibonacci
+//
+// Integer encoded using Fibonacci encoding
+// See “About Fibonacci Encoding” for more detail
+// https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
+
+class IntegerFibonacci {
+  #value = null;
+
+  static Builder = class {
+    #value = 0;
+
+    setValue(value) {
+      if (!Number.isInteger(value) && value >= 0) {
+        throw "value param must be a non-negative integer";
+      }
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      const integer = new IntegerFibonacci(this.#value);
+      return integer;
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    return fibonacciEncoding(this.#value);
+  }
+}
+
+//
+// StringFixedLength
+//
+// A fixed amount of bit representing a string. The character’s ASCII integer ID is subtracted by 65 and encoded into an int(6).
+// Example: int(6) “101010” represents integer 47 + 65 = char “h”
+
+class StringFixedLength {
+  #value = null;
+
+  static Builder = class {
+    #value = "";
+
+    setValue(value) {
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      return new StringFixedLength(this.#value);
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    let encodedString = "";
+    let int6;
+    for (let char of this.#value) {
+      int6 = new IntegerFixedLength.Builder()
+        .setLength(6)
+        .setValue(char.charCodeAt(0) - 65)
+        .build();
+      encodedString += int6.encode();
+    }
+    return encodedString;
+  }
+}
+
+//
+// Datetime
+//
+// A datetime is encoded as a 36 bit integer representing the 1/10th seconds since January 01 1970 00:00:00 UTC.
+// Example JavaScript representation: Math.round((new Date()).getTime()/100)
+
+class Datetime {
+  #value = null;
+
+  static Builder = class {
+    #value = null;
+
+    setValue(value) {
+      if (!value instanceof Date) {
+        throw "value param must be an Date";
+      }
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      return new Datetime(this.#value);
+    }
+  };
+
+  constructor(value) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode() {
+    let int36 = new IntegerFixedLength.Builder()
+      .setLength(36)
+      .setValue(Math.round(this.#value.getTime() / 100))
+      .build();
+    return int36.encode();
+  }
+}
+
+//
+// RangeInteger
+//
+
+class RangeInteger {
+  #items = [];
+  #SINGLE = "0";
+  #GROUP = "1";
+
+  static Builder = class {
+    #items = [];
+    #lastValue = 0;
+    #SINGLE = "0";
+    #GROUP = "1";
+
+    addSingle(value) {
+      if (!Number.isInteger(value)) {
+        throw "value param must be an integer";
+      }
+      if (value <= this.#lastValue) {
+        throw "Values must be added in sorted ascending order";
+      }
+      this.#items.push({ type: this.#SINGLE, value: value });
+      this.#lastValue = value;
+      return this;
+    }
+
+    addGroup(fromValue, toValue) {
+      if (!Number.isInteger(fromValue)) {
+        throw "fromValue param must be an integer";
+      }
+      if (!Number.isInteger(toValue)) {
+        throw "toValue param must be an integer";
+      }
+      if (fromValue >= toValue) {
+        throw "fromValue must be lower than toValue";
+      }
+      if (fromValue <= this.#lastValue) {
+        throw "Values must be added in sorted ascending order";
+      }
+      this.#items.push({ type: this.#GROUP, fromValue, toValue });
+      this.#lastValue = toValue;
+      return this;
+    }
+
+    build() {
+      return new RangeInteger(this.#items);
+    }
+  };
+
+  constructor(items) {
+    this.#items = items;
+  }
+
+  toString() {
+    return JSON.stringify({
+      items: this.#items,
+    });
+  }
+
+  encode() {
+    let encodedRange = "";
+    encodedRange += new IntegerFixedLength.Builder()
+      .setLength(12)
+      .setValue(this.#items.length)
+      .build()
+      .encode();
+    let lastValue = 0;
+    this.#items.forEach((item, index) => {
+      if (item.type === this.#SINGLE) {
+        encodedRange += this.#SINGLE;
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.value - lastValue)
+          .build()
+          .encode();
+
+        lastValue = item.value;
+      } else if (item.type === this.#GROUP) {
+        encodedRange += this.#GROUP;
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.fromValue - lastValue)
+          .build()
+          .encode();
+        encodedRange += new IntegerFixedLength.Builder()
+          .setLength(16)
+          .setValue(item.toValue - item.fromValue)
+          .build()
+          .encode();
+        lastValue = item.toValue;
+      }
+    });
+    return encodedRange;
+  }
+}
+
+//
+// RangeFibonacci
+//
 
 class RangeFibonacci {
   #items = [];
@@ -165,7 +398,6 @@ class RangeFibonacci {
 
     let lastValue = 0;
     this.#items.forEach((item, index) => {
-      // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
       if (item.type === this.#SINGLE) {
         encodedRange += this.#SINGLE;
         encodedRange += fibonacciEncoding(item.value - lastValue);
@@ -180,6 +412,10 @@ class RangeFibonacci {
     return encodedRange;
   }
 }
+
+//
+// NBitField
+//
 
 class NBitfield {
   #nBits = null;
@@ -248,10 +484,18 @@ class NBitfield {
   encode() {
     let encodedRange = "";
     this.#nBits.forEach((item, index) => {
-      // console.log(`Index: ${index}, type: ${JSON.stringify(item)}`);
       encodedRange += item.encode();
     });
     return encodedRange;
   }
 }
-export { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield };
+export {
+  Boolean,
+  IntegerFixedLength,
+  IntegerFibonacci,
+  StringFixedLength,
+  Datetime,
+  RangeInteger,
+  RangeFibonacci,
+  NBitfield,
+};
