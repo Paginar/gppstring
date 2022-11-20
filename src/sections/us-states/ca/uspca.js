@@ -75,7 +75,7 @@ class UspcaSection {
       .build();
 
     setSaleOptOutNotice(saleOptOutNotice) {
-      if (saleOptOutNotice < 0 && saleOptOutNotice >= 2) {
+      if (saleOptOutNotice < 0 || saleOptOutNotice > 2) {
         throw `param value ${saleOptOutNotice} of setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
       this.#saleOptOutNotice = new IntegerFixedLength.Builder()
@@ -86,7 +86,7 @@ class UspcaSection {
     }
 
     setSharingOptOutNotice(sharingOptOutNotice) {
-      if (sharingOptOutNotice < 0 && sharingOptOutNotice > 2) {
+      if (sharingOptOutNotice < 0 || sharingOptOutNotice > 2) {
         throw `param value ${sharingOptOutNotice} of setSharingOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
       this.#sharingOptOutNotice = new IntegerFixedLength.Builder()
@@ -97,19 +97,18 @@ class UspcaSection {
     }
 
     setSensitiveDataLimitUseNotice(sensitiveDataLimitUseNotice) {
-      if (sensitiveDataLimitUseNotice < 0 && sensitiveDataLimitUseNotice > 2) {
+      if (sensitiveDataLimitUseNotice < 0 || sensitiveDataLimitUseNotice > 2) {
         throw `param value ${sensitiveDataLimitUseNotice} of setSensitiveDataLimitUseNotice method must be a non-negative integer between 0 and 2`;
       }
       this.#sensitiveDataLimitUseNotice = new IntegerFixedLength.Builder()
         .setLength(2)
         .setValue(sensitiveDataLimitUseNotice)
         .build();
-
       return this;
     }
 
     setSaleOptOut(saleOptOut) {
-      if (saleOptOut < 0 && saleOptOut > 2) {
+      if (saleOptOut < 0 || saleOptOut > 2) {
         throw `param value ${saleOptOut} of setSaleOptOut method must be a non-negative integer between 0 and 2`;
       }
       this.#saleOptOut = new IntegerFixedLength.Builder()
@@ -120,7 +119,7 @@ class UspcaSection {
     }
 
     setSharingOptOut(sharingOptOut) {
-      if (sharingOptOut < 0 && sharingOptOut > 2) {
+      if (sharingOptOut < 0 || sharingOptOut > 2) {
         throw `param value ${sharingOptOut} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
       }
       this.#sharingOptOut = new IntegerFixedLength.Builder()
@@ -132,19 +131,16 @@ class UspcaSection {
 
     setSensitiveDataProcessing(sensitiveDataProcessing) {
       if (
-        Array.isArray(sensitiveDataProcessing) &&
-        sensitiveDataProcessing.length === 9
+        !Array.isArray(sensitiveDataProcessing) ||
+        sensitiveDataProcessing.length !== 9
       ) {
-        throw `param value ${sensitiveDataProcessing} of section in setSensitiveDataProcessing method must be an Array of length 9`;
+        throw `param in setSensitiveDataProcessing method must be an Array of length 9`;
       }
       const nbitfield = new NBitfield.Builder().setNbitSize(2).setNumBits(9);
 
-      for (let n = 1; n <= sensitiveDataProcessing.length; n++) {
+      for (let n = 0; n < 9; n++) {
         const bitValue = sensitiveDataProcessing[n];
-        if (bitValue < 0 && bitValue > 2) {
-          throw `Check Array values. Index ${n} of Array must be a non-negative integer between 0 and 2 in setSensitiveDataProcessing method`;
-        }
-        nbitfield.setNBit(n, bitValue);
+        nbitfield.setNBit(n + 1, bitValue);
       }
       this.#sensitiveDataProcessing = nbitfield.build();
       return this;
@@ -152,27 +148,22 @@ class UspcaSection {
 
     setKnownChildSensitiveDataConsents(knownChildSensitiveDataConsents) {
       if (
-        Array.isArray(knownChildSensitiveDataConsents) &&
-        knownChildSensitiveDataConsents.length === 2
+        !Array.isArray(knownChildSensitiveDataConsents) ||
+        knownChildSensitiveDataConsents.length !== 2
       ) {
         throw `param value ${knownChildSensitiveDataConsents} of section in setKnownChildSensitiveDataConsents method must be an Array of length 2`;
       }
-      const nbitfield = new NBitfield.Build()
-        .setNbitSize(2)
-        .setNumBits(knownChildSensitiveDataConsents.length);
-      for (let n = 1; n <= knownChildSensitiveDataConsents.length; n++) {
+      const nbitfield = new NBitfield.Builder().setNbitSize(2).setNumBits(2);
+      for (let n = 0; n < 2; n++) {
         const bitValue = knownChildSensitiveDataConsents[n];
-        if (bitValue < 0 && bitValue > 2) {
-          throw `Check Array values. Index ${n} of Array must be a non-negative integer between 0 and 2 in setKnownChildSensitiveDataConsents`;
-        }
-        nbitfield.setNBit(n, bitValue);
+        nbitfield.setNBit(n + 1, bitValue);
       }
       this.#knownChildSensitiveDataConsents = nbitfield.build();
       return this;
     }
 
     setPersonalDataConsents(personalDataConsents) {
-      if (personalDataConsents < 0 && personalDataConsents > 2) {
+      if (personalDataConsents < 0 || personalDataConsents > 2) {
         throw `param value ${sharingOptOut} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
       }
       this.#personalDataConsents = new IntegerFixedLength.Builder()
@@ -183,7 +174,7 @@ class UspcaSection {
     }
 
     setMspaCoveredTransaction(mspaCoveredTransaction) {
-      if (mspaCoveredTransaction < 0 && mspaCoveredTransaction > 2) {
+      if (mspaCoveredTransaction < 0 || mspaCoveredTransaction > 2) {
         throw `param value ${mspaCoveredTransaction} of setMspaCoveredTransaction method must be a non-negative integer between 0 and 2`;
       }
       this.#mspaCoveredTransaction = new IntegerFixedLength.Builder()
@@ -194,7 +185,7 @@ class UspcaSection {
     }
 
     setMspaOptOutOptionMode(mspaOptOutOptionMode) {
-      if (mspaOptOutOptionMode < 0 && mspaOptOutOptionMode > 2) {
+      if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) {
         throw `param value ${sharingOptOut} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
       }
       this.#mspaOptOutOptionMode = new IntegerFixedLength.Builder()
@@ -205,7 +196,7 @@ class UspcaSection {
     }
 
     setMspaServiceProviderMode(mspaServiceProviderMode) {
-      if (mspaServiceProviderMode < 0 && mspaServiceProviderMode > 2) {
+      if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) {
         throw `param value ${sharingOptOut} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
       }
       this.#mspaServiceProviderMode = new IntegerFixedLength.Builder()
