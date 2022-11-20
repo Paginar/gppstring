@@ -483,7 +483,7 @@ class NBitfield {
 
   encode() {
     let encodedRange = "";
-    this.#nBits.forEach((item, index) => {
+    this.#nBits.forEach((item) => {
       encodedRange += item.encode();
     });
     return encodedRange;
