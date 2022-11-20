@@ -19,7 +19,5 @@ test("Create a default uspca section", () => {
 test("Create a default uspca section", () => {
   let uspca = new UspcaSection.Builder().build();
   let gppString = new GPPString.Builder().adduspcaSection(uspca).build();
-  expect(gppString.encode2Base64Websafe()).toBe(
-    "0000110000010000000000010000011~0000010000000000000000000000000000000000000000"
-  );
+  expect(gppString.encode2Base64Websafe()).toBe("DBABBa~BAAAAAAA");
 });
