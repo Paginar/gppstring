@@ -41,3 +41,14 @@ export function fibonacciEncoding(n) {
   const code = fibonacciEncode(n);
   return code;
 }
+
+export function asciiEncodeBitStr(bitStr) {
+  const fibcode = bitStr;
+
+  while (fibcode.length % 6 !== 0) {
+    fibcode += "0";
+  }
+
+  const fibcodeDivided = fibcode.match(/.{1,6}/g);
+  return fibcodeDivided.map((str) => String.fromCharCode(str)).join("");
+}

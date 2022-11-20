@@ -1,12 +1,8 @@
-// eslint-disable-next-line max-classes-per-file
-// import GppHeader from "./gpp-header";
-import {
-  Boolean,
-  IntegerFixedLength,
-  RangeFibonacci,
-  NBitfield,
-} from "./core/data-types";
-// import { GGP_TYPE, GGP_VERSION, GGP_SECTIONS } from "./utils";
+import GPPHeader from "./gpp-header";
+
+const GPP_TYPE = 3;
+const GPP_VERSION = 1;
+
 class GPPString {
   #sections = new Map();
 
@@ -28,24 +24,20 @@ class GPPString {
   }
 
   encode() {
-    // const headerEncoded = new GppHeader(
-    //   GGP_TYPE,
-    //   GGP_VERSION,
-    //   GGP_SECTIONS
-    // ).encode();
-
-    if (this.#sections.keys().length === 0) {
+    let encodedString = "";
+    if (this.#sections.size === 0) {
       throw "You need to add sections to be able to build the GPP string";
     }
     const sortedSections = this.#sortSections();
-    // console.log(sortedSections);
+    const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
+    encodedString += encodedHeader.encode();
 
     for (const [key, value] of this.#sections) {
       // console.log(`${key} = ${value}`);
       // console.log(`${value.encode()}`);
+      encodedString += "~" + value.encode();
     }
-
-    // return `${headerEncoded}~${ccpaSectionEncoded}-${cpraSectionEncoded}`;
+    return encodedString;
   }
 
   toString() {
