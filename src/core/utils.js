@@ -1,9 +1,11 @@
 export function dec2bin(dec) {
   return dec.toString(2);
 }
+
 export function isOverflowed(value, length) {
   return dec2bin(value).length > length;
 }
+
 export function fibonacciEncoding(n) {
   const fib = new Array(n);
 
@@ -42,13 +44,24 @@ export function fibonacciEncoding(n) {
   return code;
 }
 
-export function asciiEncodeBitStr(bitStr) {
-  const fibcode = bitStr;
-
-  while (fibcode.length % 6 !== 0) {
-    fibcode += "0";
-  }
-
+export function encodeBitStr2Base64Websafe(bitStr) {
+  let fibcode = bitStr;
+  fibcode = padString6bits(fibcode);
   const fibcodeDivided = fibcode.match(/.{1,6}/g);
-  return fibcodeDivided.map((str) => String.fromCharCode(str)).join("");
+  return fibcodeDivided
+    .map((str) => {
+      // console.log(parseInt(str, 2) + 65);
+      return String.fromCharCode(parseInt(str, 2) + 65);
+    })
+    .join("");
+}
+
+function padString6bits(string) {
+  let mod = string.length % 6;
+  // We don't require any padding
+  if (!mod) return string;
+  // See how much padding we need
+  let rem = 6 - mod;
+  let pad = "".padEnd(rem, "0");
+  return string + pad;
 }

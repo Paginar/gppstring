@@ -31,7 +31,7 @@ class Boolean {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     if (this.#value) return "1";
     else return "0";
   }
@@ -92,7 +92,7 @@ class IntegerFixedLength {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     const binString = dec2bin(this.#value);
     return binString.padStart(this.#length, "0");
   }
@@ -135,7 +135,7 @@ class IntegerFibonacci {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     return fibonacciEncoding(this.#value);
   }
 }
@@ -172,7 +172,7 @@ class StringFixedLength {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     let encodedString = "";
     let int6;
     for (let char of this.#value) {
@@ -180,7 +180,7 @@ class StringFixedLength {
         .setLength(6)
         .setValue(char.charCodeAt(0) - 65)
         .build();
-      encodedString += int6.encode();
+      encodedString += int6.encode2BitStr();
     }
     return encodedString;
   }
@@ -221,12 +221,12 @@ class Datetime {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     let int36 = new IntegerFixedLength.Builder()
       .setLength(36)
       .setValue(Math.round(this.#value.getTime() / 100))
       .build();
-    return int36.encode();
+    return int36.encode2BitStr();
   }
 }
 
@@ -290,13 +290,13 @@ class RangeInteger {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     let encodedRange = "";
     encodedRange += new IntegerFixedLength.Builder()
       .setLength(12)
       .setValue(this.#items.length)
       .build()
-      .encode();
+      .encode2BitStr();
     let lastValue = 0;
     this.#items.forEach((item, index) => {
       if (item.type === this.#SINGLE) {
@@ -305,7 +305,7 @@ class RangeInteger {
           .setLength(16)
           .setValue(item.value - lastValue)
           .build()
-          .encode();
+          .encode2BitStr();
 
         lastValue = item.value;
       } else if (item.type === this.#GROUP) {
@@ -314,12 +314,12 @@ class RangeInteger {
           .setLength(16)
           .setValue(item.fromValue - lastValue)
           .build()
-          .encode();
+          .encode2BitStr();
         encodedRange += new IntegerFixedLength.Builder()
           .setLength(16)
           .setValue(item.toValue - item.fromValue)
           .build()
-          .encode();
+          .encode2BitStr();
         lastValue = item.toValue;
       }
     });
@@ -388,13 +388,13 @@ class RangeFibonacci {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     let encodedRange = "";
     encodedRange += new IntegerFixedLength.Builder()
       .setLength(12)
       .setValue(this.#items.length)
       .build()
-      .encode();
+      .encode2BitStr();
 
     let lastValue = 0;
     this.#items.forEach((item, index) => {
@@ -481,10 +481,10 @@ class NBitfield {
     });
   }
 
-  encode() {
+  encode2BitStr() {
     let encodedRange = "";
     this.#nBits.forEach((item) => {
-      encodedRange += item.encode();
+      encodedRange += item.encode2BitStr();
     });
     return encodedRange;
   }

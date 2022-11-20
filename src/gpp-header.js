@@ -16,11 +16,11 @@ class GPPHeader {
     this.#sections = rangeFibonacci.build();
   }
 
-  encode() {
+  encode2BitStr() {
     let encodedString = "";
-    encodedString += this.#type.encode();
-    encodedString += this.#version.encode();
-    encodedString += this.#sections.encode();
+    encodedString += this.#type.encode2BitStr();
+    encodedString += this.#version.encode2BitStr();
+    encodedString += this.#sections.encode2BitStr();
     return encodedString;
   }
 }

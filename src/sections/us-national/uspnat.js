@@ -1,149 +1,150 @@
 // eslint-disable-next-line max-classes-per-file
-import { Boolean, IntegerFixedLength, RangeFibonacci, NBitfield } from '../../../core/data-types';
+import {
+  Boolean,
+  IntegerFixedLength,
+  RangeFibonacci,
+  NBitfield,
+} from "../../../core/data-types";
 
 class UspnatSection {
-  #prefix = 'uspnat'
+  #prefix = "uspnat";
 
-  #lspa = 'Y'
+  #lspa = "Y";
 
-  #section_id = 7
+  #section_id = 7;
 
-  #version = '1';
+  #version = "1";
 
-  #sharingNotice = 'Y'
+  #sharingNotice = "Y";
 
-  #saleOptOutNotice = 'Y';
-  
-  #sharingOptOutNotice = 'Y'
-  
-  #targetedAdvertisingOptOutNotice = 'Y'
-  
-  #sensitiveDataProcessingOptOutNotice = 'Y'
-  
-  #sensitiveDataLimitUseNotice = 'Y'
+  #saleOptOutNotice = "Y";
 
-  #saleOptOut = 'Y'
+  #sharingOptOutNotice = "Y";
 
-  #sharingOptOut = 'Y'
+  #targetedAdvertisingOptOutNotice = "Y";
 
-  #targetedAdvertisingOptOut = 'Y'
+  #sensitiveDataProcessingOptOutNotice = "Y";
 
-  #sensitiveDataProcessing = 'Y'
+  #sensitiveDataLimitUseNotice = "Y";
 
-  #knownChildSensitiveDataConsents = 'Y'
+  #saleOptOut = "Y";
 
-  #personalDataConsents = 'Y'
+  #sharingOptOut = "Y";
 
-  #mspaCoveredTransaction = 'Y'
+  #targetedAdvertisingOptOut = "Y";
 
-  #mspaOptOutOptionMode = 'Y'
+  #sensitiveDataProcessing = "Y";
 
-  #mspaServiceProviderMode = 'Y'
+  #knownChildSensitiveDataConsents = "Y";
 
+  #personalDataConsents = "Y";
+
+  #mspaCoveredTransaction = "Y";
+
+  #mspaOptOutOptionMode = "Y";
+
+  #mspaServiceProviderMode = "Y";
 
   static Builder = class {
-    #prefix = 'uspnat'
+    #prefix = "uspnat";
 
-    #lspa = 'Y'
-  
-    #section_id = 7
-  
-    #version = '1';
-  
-    #sharingNotice = 'Y'
-  
-    #saleOptOutNotice = 'Y';
-    
-    #sharingOptOutNotice = 'Y'
-    
-    #targetedAdvertisingOptOutNotice = 'Y'
-    
-    #sensitiveDataProcessingOptOutNotice = 'Y'
-    
-    #sensitiveDataLimitUseNotice = 'Y'
-  
-    #saleOptOut = 'Y'
-  
-    #sharingOptOut = 'Y'
-  
-    #targetedAdvertisingOptOut = 'Y'
-  
-    #sensitiveDataProcessing = 'Y'
-  
-    #knownChildSensitiveDataConsents = 'Y'
-  
-    #personalDataConsents = 'Y'
-  
-    #mspaCoveredTransaction = 'Y'
-  
-    #mspaOptOutOptionMode = 'Y'
-  
-    #mspaServiceProviderMode = 'Y'
+    #lspa = "Y";
 
+    #section_id = 7;
 
+    #version = "1";
+
+    #sharingNotice = "Y";
+
+    #saleOptOutNotice = "Y";
+
+    #sharingOptOutNotice = "Y";
+
+    #targetedAdvertisingOptOutNotice = "Y";
+
+    #sensitiveDataProcessingOptOutNotice = "Y";
+
+    #sensitiveDataLimitUseNotice = "Y";
+
+    #saleOptOut = "Y";
+
+    #sharingOptOut = "Y";
+
+    #targetedAdvertisingOptOut = "Y";
+
+    #sensitiveDataProcessing = "Y";
+
+    #knownChildSensitiveDataConsents = "Y";
+
+    #personalDataConsents = "Y";
+
+    #mspaCoveredTransaction = "Y";
+
+    #mspaOptOutOptionMode = "Y";
+
+    #mspaServiceProviderMode = "Y";
 
     setVersion(version) {
+      this.#version = version;
 
-        this.#version = version
-
-        return this
+      return this;
     }
 
     setSaleOptOutNotice(saleOptOutNotice) {
-        if (saleOptOutNotice >= 0 && saleOptOutNotice <= 2) {
-            throw `param value ${saleOptOutNotice} of ${this.#prefix} setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
-        }
+      if (saleOptOutNotice >= 0 && saleOptOutNotice <= 2) {
+        throw `param value ${saleOptOutNotice} of ${
+          this.#prefix
+        } setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
+      }
 
-      this.#saleOptOutNotice = saleOptOutNotice
+      this.#saleOptOutNotice = saleOptOutNotice;
 
       return this;
     }
 
     setSaleOptOut(saleOptOut) {
-        if (saleOptOut >= 0 && saleOptOut <= 2) {
-            throw `param value ${saleOptOut} of ${this.#prefix} setSaleOptOut method must be a non-negative integer between 0 and 2`;
-        }
+      if (saleOptOut >= 0 && saleOptOut <= 2) {
+        throw `param value ${saleOptOut} of ${
+          this.#prefix
+        } setSaleOptOut method must be a non-negative integer between 0 and 2`;
+      }
 
-      this.#saleOptOut = saleOptOut
+      this.#saleOptOut = saleOptOut;
 
       return this;
     }
 
     setLspa(lspa) {
-        if (lspa >= 0 && lspa <= 2) {
-            throw `param value ${lspa} of ${this.#prefix} setLspa method must be a non-negative integer between 0 and 2`;
-        }
+      if (lspa >= 0 && lspa <= 2) {
+        throw `param value ${lspa} of ${
+          this.#prefix
+        } setLspa method must be a non-negative integer between 0 and 2`;
+      }
 
-      this.#lspa = lspa
+      this.#lspa = lspa;
 
       return this;
     }
-
 
     build() {
       const gppString = new UspnatSection(
         this.#version,
         this.#saleOptOutNotice,
         this.#saleOptOut,
-        this.#lspa,
+        this.#lspa
       );
       return gppString;
     }
   };
 
-  constructor(
-    version,
-    saleOptOutNotice,
-    saleOptOut,
-    lspa,
-  ) {
-    this.#version = version
-    this.#saleOptOutNotice = saleOptOutNotice
-    this.#saleOptOut = saleOptOut
-    this.#lspa = lspa
+  constructor(version, saleOptOutNotice, saleOptOut, lspa) {
+    this.#version = version;
+    this.#saleOptOutNotice = saleOptOutNotice;
+    this.#saleOptOut = saleOptOut;
+    this.#lspa = lspa;
   }
 
-  encode() {
+  encode2BitStr() {
     const bitStr = `
     ${this.#version}
     ${this.#saleOptOutNotice}
@@ -151,8 +152,8 @@ class UspnatSection {
     ${this.#lspa}`;
     const b64 = btoa(bitStr);
 
-    // 
-    return b64 + '~' + bitStr
+    //
+    return b64 + "~" + bitStr;
   }
 }
 

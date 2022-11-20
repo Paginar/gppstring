@@ -250,20 +250,20 @@ class UspcaSection {
     this.#mspaServiceProviderMode = mspaServiceProviderMode;
   }
 
-  encode() {
+  encode2BitStr() {
     let bitStr = "";
-    bitStr += this.version.encode();
-    bitStr += this.#saleOptOutNotice.encode();
-    bitStr += this.#sharingOptOutNotice.encode();
-    bitStr += this.#sensitiveDataLimitUseNotice.encode();
-    bitStr += this.#saleOptOut.encode();
-    bitStr += this.#sharingOptOut.encode();
-    bitStr += this.#sensitiveDataProcessing.encode();
-    bitStr += this.#knownChildSensitiveDataConsents.encode();
-    bitStr += this.#personalDataConsents.encode();
-    bitStr += this.#mspaCoveredTransaction.encode();
-    bitStr += this.#mspaOptOutOptionMode.encode();
-    bitStr += this.#mspaServiceProviderMode.encode();
+    bitStr += this.version.encode2BitStr();
+    bitStr += this.#saleOptOutNotice.encode2BitStr();
+    bitStr += this.#sharingOptOutNotice.encode2BitStr();
+    bitStr += this.#sensitiveDataLimitUseNotice.encode2BitStr();
+    bitStr += this.#saleOptOut.encode2BitStr();
+    bitStr += this.#sharingOptOut.encode2BitStr();
+    bitStr += this.#sensitiveDataProcessing.encode2BitStr();
+    bitStr += this.#knownChildSensitiveDataConsents.encode2BitStr();
+    bitStr += this.#personalDataConsents.encode2BitStr();
+    bitStr += this.#mspaCoveredTransaction.encode2BitStr();
+    bitStr += this.#mspaOptOutOptionMode.encode2BitStr();
+    bitStr += this.#mspaServiceProviderMode.encode2BitStr();
     // const b64 = Buffer.from(bitStr, "base64url");
     return bitStr;
   }
