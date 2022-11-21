@@ -1,8 +1,8 @@
 import { IntegerFixedLength, RangeFibonacci } from "./data-types";
-import { Section } from "./section";
 
 const GPP_TYPE = 3;
 const GPP_VERSION = 1;
+
 class GPPHeader {
   #type = new IntegerFixedLength.Builder()
     .setLength(6)
