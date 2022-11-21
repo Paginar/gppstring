@@ -95,11 +95,9 @@ Also most source files have Jest tests (/src/\*\*/\*.test.js) files which should
 
 # To do
 
-- Update README with usage examples
 - Add all other sections
 - Add console logging (with different log levels)
 - Create the localStorage key names (ie IABGPP_8_String)
-- Convert to Typescript / add types
 - GPP String decoder function to assist in debugging? (:thumbsdown:)
 
 # Contributors
