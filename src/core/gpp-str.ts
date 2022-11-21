@@ -1,14 +1,15 @@
 import { GPPHeader } from "./gpp-header";
-import { encode2BitStr2Base64Websafe } from "./utils";
+import { encodeBitStr2Base64Websafe } from "./utils";
+import { Section } from "./section";
 
 class GPPString {
-  #sections = new Map();
+  #sections: Map<number, Section> = new Map();
 
   static Builder = class {
-    #sections = new Map();
+    #sections: Map<number, Section> = new Map();
 
-    addSection(section) {
-      this.#sections.set(section.gppSectionID, section);
+    addSection(section: Section) {
+      this.#sections.set(section.getGPPSectionID(), section);
       return this;
     }
 
@@ -17,7 +18,7 @@ class GPPString {
     }
   };
 
-  constructor(sections) {
+  constructor(sections: Map<number, Section>) {
     this.#sections = sections;
   }
 
@@ -43,10 +44,10 @@ class GPPString {
     }
     const sortedSections = this.#sortSections();
     const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
-    encodedString += encode2BitStr2Base64Websafe(encodedHeader.encode2BitStr());
+    encodedString += encodeBitStr2Base64Websafe(encodedHeader.encode2BitStr());
 
     for (const [, value] of this.#sections) {
-      encodedString += "~" + encode2BitStr2Base64Websafe(value.encode2BitStr());
+      encodedString += "~" + encodeBitStr2Base64Websafe(value.encode2BitStr());
     }
     return encodedString;
   }
@@ -57,7 +58,9 @@ class GPPString {
 
   #sortSections() {
     return new Map(
-      [...this.#sections].sort((a, b) => String(a[0]).localeCompare(b[0]))
+      [...this.#sections].sort(
+        (a: [number, Section], b: [number, Section]) => a[0] - b[0]
+      )
     );
   }
 }

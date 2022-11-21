@@ -1,16 +1,36 @@
-import { dec2bin, isOverflowed, int2Fibonacci } from "./utils";
+import { int2BinStr, isOverflowed, int2Fibonacci } from "./utils";
+
+//
+// Global
+//
+
+enum RangeItemType {
+  SINGLE = "0",
+  GROUP = "1",
+}
+
+interface RangeItemSingle {
+  type: RangeItemType.SINGLE;
+  value: number;
+}
+
+interface RangeItemGroup {
+  type: RangeItemType.GROUP;
+  fromValue: number;
+  toValue: number;
+}
 
 //
 // Boolean
 //
 
 class Boolean {
-  #value = null;
+  #value = false;
 
   static Builder = class {
     #value = false;
 
-    setValue(value) {
+    setValue(value: boolean) {
       this.#value = !!value;
       return this;
     }
@@ -21,7 +41,7 @@ class Boolean {
     }
   };
 
-  constructor(value) {
+  constructor(value: boolean) {
     this.#value = value;
   }
 
@@ -42,10 +62,10 @@ class Boolean {
 //
 
 class IntegerFixedLength {
-  #value = null;
-  #length = null;
+  #value: number;
+  #length: number;
 
-  static Builder = class {
+  static Builder = class Builder {
     #value = 0;
     #length = 1;
 
@@ -58,7 +78,7 @@ class IntegerFixedLength {
       return this;
     }
 
-    setValue(value) {
+    setValue(value: number) {
       if (!Number.isInteger(value) && value >= 0) {
         throw "value param must be a non-negative integer";
       }
@@ -72,15 +92,15 @@ class IntegerFixedLength {
       return integer;
     }
 
-    #checkIfTruncated(value, length) {
-      const binString = dec2bin(value);
+    #checkIfTruncated(value: number, length: number) {
+      const binString = int2BinStr(value);
       if (isOverflowed(value, length)) {
         throw `Truncation error, length must be larger than ${binString.length} for value ${value}`;
       }
     }
   };
 
-  constructor(value, length) {
+  constructor(value: number, length: number) {
     this.#value = value;
     this.#length = length;
   }
@@ -93,7 +113,7 @@ class IntegerFixedLength {
   }
 
   encode2BitStr() {
-    const binString = dec2bin(this.#value);
+    const binString = int2BinStr(this.#value);
     return binString.padStart(this.#length, "0");
   }
 }
@@ -106,12 +126,12 @@ class IntegerFixedLength {
 // https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
 
 class IntegerFibonacci {
-  #value = null;
+  #value = 0;
 
   static Builder = class {
     #value = 0;
 
-    setValue(value) {
+    setValue(value: number) {
       if (!Number.isInteger(value) && value >= 0) {
         throw "value param must be a non-negative integer";
       }
@@ -125,7 +145,7 @@ class IntegerFibonacci {
     }
   };
 
-  constructor(value) {
+  constructor(value: number) {
     this.#value = value;
   }
 
@@ -147,12 +167,12 @@ class IntegerFibonacci {
 // Example: int(6) “101010” represents integer 47 + 65 = char “h”
 
 class StringFixedLength {
-  #value = null;
+  #value = "";
 
   static Builder = class {
     #value = "";
 
-    setValue(value) {
+    setValue(value: string) {
       this.#value = value;
       return this;
     }
@@ -162,7 +182,7 @@ class StringFixedLength {
     }
   };
 
-  constructor(value) {
+  constructor(value: string) {
     this.#value = value;
   }
 
@@ -175,7 +195,7 @@ class StringFixedLength {
   encode2BitStr() {
     let encodedString = "";
     let int6;
-    for (let char of this.#value) {
+    for (const char of this.#value) {
       int6 = new IntegerFixedLength.Builder()
         .setLength(6)
         .setValue(char.charCodeAt(0) - 65)
@@ -193,13 +213,13 @@ class StringFixedLength {
 // Example JavaScript representation: Math.round((new Date()).getTime()/100)
 
 class Datetime {
-  #value = null;
+  #value = new Date();
 
   static Builder = class {
-    #value = null;
+    #value = new Date();
 
-    setValue(value) {
-      if (!value instanceof Date) {
+    setValue(value: Date) {
+      if (!(value instanceof Date)) {
         throw "value param must be an Date";
       }
       this.#value = value;
@@ -211,7 +231,7 @@ class Datetime {
     }
   };
 
-  constructor(value) {
+  constructor(value: Date) {
     this.#value = value;
   }
 
@@ -222,7 +242,7 @@ class Datetime {
   }
 
   encode2BitStr() {
-    let int36 = new IntegerFixedLength.Builder()
+    const int36 = new IntegerFixedLength.Builder()
       .setLength(36)
       .setValue(Math.round(this.#value.getTime() / 100))
       .build();
@@ -235,29 +255,33 @@ class Datetime {
 //
 
 class RangeInteger {
-  #items = [];
+  #items: (RangeItemSingle | RangeItemGroup)[] = [];
   #SINGLE = "0";
   #GROUP = "1";
 
   static Builder = class {
-    #items = [];
+    #items: (RangeItemSingle | RangeItemGroup)[] = [];
     #lastValue = 0;
     #SINGLE = "0";
     #GROUP = "1";
 
-    addSingle(value) {
+    addSingle(value: number) {
       if (!Number.isInteger(value)) {
         throw "value param must be an integer";
       }
       if (value <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: this.#SINGLE, value: value });
+
+      this.#items.push({
+        type: RangeItemType.SINGLE,
+        value: value,
+      });
       this.#lastValue = value;
       return this;
     }
 
-    addGroup(fromValue, toValue) {
+    addGroup(fromValue: number, toValue: number) {
       if (!Number.isInteger(fromValue)) {
         throw "fromValue param must be an integer";
       }
@@ -270,7 +294,7 @@ class RangeInteger {
       if (fromValue <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: this.#GROUP, fromValue, toValue });
+      this.#items.push({ type: RangeItemType.GROUP, fromValue, toValue });
       this.#lastValue = toValue;
       return this;
     }
@@ -280,7 +304,7 @@ class RangeInteger {
     }
   };
 
-  constructor(items) {
+  constructor(items: (RangeItemSingle | RangeItemGroup)[]) {
     this.#items = items;
   }
 
@@ -298,8 +322,8 @@ class RangeInteger {
       .build()
       .encode2BitStr();
     let lastValue = 0;
-    this.#items.forEach((item, index) => {
-      if (item.type === this.#SINGLE) {
+    this.#items.forEach((item) => {
+      if (item.type === RangeItemType.SINGLE) {
         encodedRange += this.#SINGLE;
         encodedRange += new IntegerFixedLength.Builder()
           .setLength(16)
@@ -308,7 +332,7 @@ class RangeInteger {
           .encode2BitStr();
 
         lastValue = item.value;
-      } else if (item.type === this.#GROUP) {
+      } else if (item.type === RangeItemType.GROUP) {
         encodedRange += this.#GROUP;
         encodedRange += new IntegerFixedLength.Builder()
           .setLength(16)
@@ -332,29 +356,25 @@ class RangeInteger {
 //
 
 class RangeFibonacci {
-  #items = [];
-  #SINGLE = "0";
-  #GROUP = "1";
+  #items: (RangeItemGroup | RangeItemSingle)[] = [];
 
   static Builder = class {
-    #items = [];
+    #items: (RangeItemGroup | RangeItemSingle)[] = [];
     #lastValue = 0;
-    #SINGLE = "0";
-    #GROUP = "1";
 
-    addSingle(value) {
+    addSingle(value: number) {
       if (!Number.isInteger(value)) {
         throw "value param must be an integer";
       }
       if (value <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: this.#SINGLE, value: value });
+      this.#items.push({ type: RangeItemType.SINGLE, value: value });
       this.#lastValue = value;
       return this;
     }
 
-    addGroup(fromValue, toValue) {
+    addGroup(fromValue: number, toValue: number) {
       if (!Number.isInteger(fromValue)) {
         throw "fromValue param must be an integer";
       }
@@ -367,7 +387,11 @@ class RangeFibonacci {
       if (fromValue <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: this.#GROUP, fromValue, toValue });
+      this.#items.push({
+        type: RangeItemType.GROUP,
+        fromValue,
+        toValue,
+      });
       this.#lastValue = toValue;
       return this;
     }
@@ -378,7 +402,7 @@ class RangeFibonacci {
     }
   };
 
-  constructor(items) {
+  constructor(items: (RangeItemGroup | RangeItemSingle)[]) {
     this.#items = items;
   }
 
@@ -397,13 +421,13 @@ class RangeFibonacci {
       .encode2BitStr();
 
     let lastValue = 0;
-    this.#items.forEach((item, index) => {
-      if (item.type === this.#SINGLE) {
-        encodedRange += this.#SINGLE;
+    this.#items.forEach((item) => {
+      if (item.type === RangeItemType.SINGLE) {
+        encodedRange += item.type;
         encodedRange += int2Fibonacci(item.value - lastValue);
         lastValue = item.value;
-      } else if (item.type === this.#GROUP) {
-        encodedRange += this.#GROUP;
+      } else if (item.type === RangeItemType.GROUP) {
+        encodedRange += item.type;
         encodedRange += int2Fibonacci(item.fromValue - lastValue);
         encodedRange += int2Fibonacci(item.toValue - item.fromValue);
         lastValue = item.toValue;
@@ -418,15 +442,15 @@ class RangeFibonacci {
 //
 
 class NBitfield {
-  #nBits = null;
-  #nBitSize = null;
+  #nBits: IntegerFixedLength[] = [];
+  #nBitSize = 1;
 
   static Builder = class {
-    #nBits = [];
+    #nBits: IntegerFixedLength[] = [];
     #nBitSize = 1;
     #numBits = 0;
 
-    setNbitSize(nBitSize) {
+    setNbitSize(nBitSize: number) {
       if (!Number.isInteger(nBitSize) && nBitSize > 0) {
         throw "nBitSize param must be a positive integer";
       }
@@ -434,18 +458,22 @@ class NBitfield {
       return this;
     }
 
-    setNumBits(numBits) {
+    setNumBits(numBits: number) {
       if (!Number.isInteger(numBits) && numBits > 0) {
         throw "numBits param must be a positive integer";
       }
       this.#numBits = numBits;
       for (let i = 0; i < numBits; i++) {
-        this.#nBits.push("0".padStart(this.#nBitSize, "0"));
+        const integerFixedLength = new IntegerFixedLength.Builder()
+          .setLength(this.#nBitSize)
+          .setValue(0)
+          .build();
+        this.#nBits.push(integerFixedLength);
       }
       return this;
     }
 
-    setNBit(position, value) {
+    setNBit(position: number, value: number) {
       if (
         !Number.isInteger(position) &&
         position >= 1 &&
@@ -469,7 +497,7 @@ class NBitfield {
     }
   };
 
-  constructor(nBitSize, nBits) {
+  constructor(nBitSize: number, nBits: IntegerFixedLength[]) {
     this.#nBitSize = nBitSize;
     this.#nBits = nBits;
   }

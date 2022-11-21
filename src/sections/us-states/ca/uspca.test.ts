@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 //const t = require("./");
 import { UspcaSection } from "./uspca";
 
 test("Create a default uspca section", () => {
-  let uspca = new UspcaSection.Builder().build();
+  const uspca = new UspcaSection.Builder().build();
   expect(uspca.encode2BitStr()).toBe(
     "0000010000000000000000000000000000000000000000"
   );
@@ -22,7 +23,9 @@ test.each([
   [1, "0000010001000000000000000000000000000000000000"],
   [2, "0000010010000000000000000000000000000000000000"],
 ])("setSharingOptOutNotice = %i", (value, expected) => {
-  let uspca = new UspcaSection.Builder().setSharingOptOutNotice(value).build();
+  const uspca = new UspcaSection.Builder()
+    .setSharingOptOutNotice(value)
+    .build();
   expect(uspca.encode2BitStr()).toBe(expected);
 });
 
@@ -31,7 +34,7 @@ test.each([
   [1, "0000010101010101000000000000000000000001010101"],
   [2, "0000011010101010000000000000000000000010101010"],
 ])("all int(2) Notices = %i", (value, expected) => {
-  let uspca = new UspcaSection.Builder()
+  const uspca = new UspcaSection.Builder()
     .setSaleOptOutNotice(value)
     .setSharingOptOutNotice(value)
     .setSensitiveDataLimitUseNotice(value)
@@ -50,9 +53,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSaleOptOutNotice Notices = %i, to throw", (value) => {
+])("setSaleOptOutNotice Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder().setSaleOptOutNotice(value).build();
+    // @ts-expect-error: this would trigger a compiler error
+    const uspca = new UspcaSection.Builder().setSaleOptOutNotice(value).build();
     uspca.encode2BitStr();
   }).toThrow();
 });
@@ -62,9 +66,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSharingOptOutNotice Notices = %i, to throw", (value) => {
+])("setSharingOptOutNotice Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setSharingOptOutNotice(value)
       .build();
     uspca.encode2BitStr();
@@ -76,9 +81,11 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSensitiveDataLimitUseNotice Notices = %i, to throw", (value) => {
+])("setSensitiveDataLimitUseNotice Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
+
       .setSensitiveDataLimitUseNotice(value)
       .build();
     uspca.encode2BitStr();
@@ -90,9 +97,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSaleOptOut Notices = %i, to throw", (value) => {
+])("setSaleOptOut Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder().setSaleOptOut(value).build();
+    // @ts-expect-error: this would trigger a compiler error
+    const uspca = new UspcaSection.Builder().setSaleOptOut(value).build();
     uspca.encode2BitStr();
   }).toThrow();
 });
@@ -102,9 +110,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSharingOptOut Notices = %i, to throw", (value) => {
+])("setSharingOptOut Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder().setSharingOptOut(value).build();
+    // @ts-expect-error: this would trigger a compiler error
+    const uspca = new UspcaSection.Builder().setSharingOptOut(value).build();
     uspca.encode2BitStr();
   }).toThrow();
 });
@@ -114,9 +123,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setPersonalDataConsents Notices = %i, to throw", (value) => {
+])("setPersonalDataConsents Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setPersonalDataConsents(value)
       .build();
     uspca.encode2BitStr();
@@ -128,9 +138,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaCoveredTransaction Notices = %i, to throw", (value) => {
+])("setMspaCoveredTransaction Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setMspaCoveredTransaction(value)
       .build();
     uspca.encode2BitStr();
@@ -142,9 +153,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaOptOutOptionMode Notices = %i, to throw", (value) => {
+])("setMspaOptOutOptionMode Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setMspaOptOutOptionMode(value)
       .build();
     uspca.encode2BitStr();
@@ -156,9 +168,10 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaServiceProviderMode Notices = %i, to throw", (value) => {
+])("setMspaServiceProviderMode Notices = %i, to throw", (value, _) => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setMspaServiceProviderMode(value)
       .build();
     uspca.encode2BitStr();
@@ -170,7 +183,8 @@ test.each([
   [1, "0000010000000000010101010101010101000000000000"],
   [2, "0000010000000000101010101010101010000000000000"],
 ])("all setSensitiveDataProcessing Notices = %i", (value, expected) => {
-  let uspca = new UspcaSection.Builder()
+  const uspca = new UspcaSection.Builder()
+    // @ts-expect-error: this would trigger a compiler error
     .setSensitiveDataProcessing([
       value,
       value,
@@ -188,7 +202,8 @@ test.each([
 
 test("Calling setSensitiveDataProcessing with wrong array size", () => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setSensitiveDataProcessing([0])
       .build();
     uspca.encode2BitStr();
@@ -197,7 +212,8 @@ test("Calling setSensitiveDataProcessing with wrong array size", () => {
 
 test("Calling setSensitiveDataProcessing with wrong values", () => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setSensitiveDataProcessing([4, 0, 0, 0, 0, 0, 0, 0, 0])
       .build();
     uspca.encode2BitStr();
@@ -209,7 +225,8 @@ test.each([
   [1, "0000010000000000000000000000000000010100000000"],
   [2, "0000010000000000000000000000000000101000000000"],
 ])("all setKnownChildSensitiveDataConsents Notices = %i", (value, expected) => {
-  let uspca = new UspcaSection.Builder()
+  const uspca = new UspcaSection.Builder()
+    // @ts-expect-error: this would trigger a compiler error
     .setKnownChildSensitiveDataConsents([value, value])
     .build();
   expect(uspca.encode2BitStr()).toBe(expected);
@@ -217,7 +234,8 @@ test.each([
 
 test("Calling setKnownChildSensitiveDataConsents with wrong array size", () => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setKnownChildSensitiveDataConsents(new Array(0))
       .build();
     uspca.encode2BitStr();
@@ -226,7 +244,8 @@ test("Calling setKnownChildSensitiveDataConsents with wrong array size", () => {
 
 test("Calling setKnownChildSensitiveDataConsents with wrong values", () => {
   expect(() => {
-    let uspca = new UspcaSection.Builder()
+    const uspca = new UspcaSection.Builder()
+      // @ts-expect-error: this would trigger a compiler error
       .setKnownChildSensitiveDataConsents([4, 0, 0, 0, 0, 0, 0, 0, 0])
       .build();
     uspca.encode2BitStr();
@@ -238,12 +257,13 @@ test.each([
   [1, "0000010101010101010101010101010101010101010101"],
   [2, "0000011010101010101010101010101010101010101010"],
 ])("all int(2) Notices = %i", (value, expected) => {
-  let uspca = new UspcaSection.Builder()
+  const uspca = new UspcaSection.Builder()
     .setSaleOptOutNotice(value)
     .setSharingOptOutNotice(value)
     .setSensitiveDataLimitUseNotice(value)
     .setSaleOptOut(value)
     .setSharingOptOut(value)
+    // @ts-expect-error: this would trigger a compiler error
     .setSensitiveDataProcessing([
       value,
       value,
@@ -255,6 +275,7 @@ test.each([
       value,
       value,
     ])
+    // @ts-expect-error: this would trigger a compiler error
     .setKnownChildSensitiveDataConsents([value, value])
     .setPersonalDataConsents(value)
     .setMspaCoveredTransaction(value)

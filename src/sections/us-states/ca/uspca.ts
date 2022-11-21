@@ -1,21 +1,22 @@
 // eslint-disable-next-line max-classes-per-file
 import { IntegerFixedLength, NBitfield } from "../../../core/data-types";
+import { Section } from "../../../core/section";
 
-class UspcaSection {
-  gppSectionID = 8;
-  clientSideAPIPrefix = "uspca";
-  version = new IntegerFixedLength.Builder().setLength(6).setValue(1).build();
-  #saleOptOutNotice = null;
-  #sharingOptOutNotice = null;
-  #sensitiveDataLimitUseNotice = null;
-  #saleOptOut = null;
-  #sharingOptOut = null;
-  #sensitiveDataProcessing = null;
-  #knownChildSensitiveDataConsents = null;
-  #personalDataConsents = null;
-  #mspaCoveredTransaction = null;
-  #mspaOptOutOptionMode = null;
-  #mspaServiceProviderMode = null;
+class UspcaSection implements Section {
+  #gppSectionID = 8;
+  #clientSideAPIPrefix = "uspca";
+  #version = new IntegerFixedLength.Builder().setLength(6).setValue(1).build();
+  #saleOptOutNotice: IntegerFixedLength;
+  #sharingOptOutNotice: IntegerFixedLength;
+  #sensitiveDataLimitUseNotice: IntegerFixedLength;
+  #saleOptOut: IntegerFixedLength;
+  #sharingOptOut: IntegerFixedLength;
+  #sensitiveDataProcessing: NBitfield;
+  #knownChildSensitiveDataConsents: NBitfield;
+  #personalDataConsents: IntegerFixedLength;
+  #mspaCoveredTransaction: IntegerFixedLength;
+  #mspaOptOutOptionMode: IntegerFixedLength;
+  #mspaServiceProviderMode: IntegerFixedLength;
 
   static Builder = class {
     #saleOptOutNotice = new IntegerFixedLength.Builder()
@@ -74,7 +75,7 @@ class UspcaSection {
       .setValue(0)
       .build();
 
-    setSaleOptOutNotice(saleOptOutNotice) {
+    setSaleOptOutNotice(saleOptOutNotice: number) {
       if (saleOptOutNotice < 0 || saleOptOutNotice > 2) {
         throw `param value ${saleOptOutNotice} of setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
@@ -85,7 +86,7 @@ class UspcaSection {
       return this;
     }
 
-    setSharingOptOutNotice(sharingOptOutNotice) {
+    setSharingOptOutNotice(sharingOptOutNotice: number) {
       if (sharingOptOutNotice < 0 || sharingOptOutNotice > 2) {
         throw `param value ${sharingOptOutNotice} of setSharingOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
@@ -96,7 +97,7 @@ class UspcaSection {
       return this;
     }
 
-    setSensitiveDataLimitUseNotice(sensitiveDataLimitUseNotice) {
+    setSensitiveDataLimitUseNotice(sensitiveDataLimitUseNotice: number) {
       if (sensitiveDataLimitUseNotice < 0 || sensitiveDataLimitUseNotice > 2) {
         throw `param value ${sensitiveDataLimitUseNotice} of setSensitiveDataLimitUseNotice method must be a non-negative integer between 0 and 2`;
       }
@@ -107,7 +108,7 @@ class UspcaSection {
       return this;
     }
 
-    setSaleOptOut(saleOptOut) {
+    setSaleOptOut(saleOptOut: number) {
       if (saleOptOut < 0 || saleOptOut > 2) {
         throw `param value ${saleOptOut} of setSaleOptOut method must be a non-negative integer between 0 and 2`;
       }
@@ -118,7 +119,7 @@ class UspcaSection {
       return this;
     }
 
-    setSharingOptOut(sharingOptOut) {
+    setSharingOptOut(sharingOptOut: number) {
       if (sharingOptOut < 0 || sharingOptOut > 2) {
         throw `param value ${sharingOptOut} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
       }
@@ -129,7 +130,7 @@ class UspcaSection {
       return this;
     }
 
-    setSensitiveDataProcessing(sensitiveDataProcessing) {
+    setSensitiveDataProcessing(sensitiveDataProcessing: number) {
       if (
         !Array.isArray(sensitiveDataProcessing) ||
         sensitiveDataProcessing.length !== 9
@@ -146,7 +147,9 @@ class UspcaSection {
       return this;
     }
 
-    setKnownChildSensitiveDataConsents(knownChildSensitiveDataConsents) {
+    setKnownChildSensitiveDataConsents(
+      knownChildSensitiveDataConsents: number
+    ) {
       if (
         !Array.isArray(knownChildSensitiveDataConsents) ||
         knownChildSensitiveDataConsents.length !== 2
@@ -162,7 +165,7 @@ class UspcaSection {
       return this;
     }
 
-    setPersonalDataConsents(personalDataConsents) {
+    setPersonalDataConsents(personalDataConsents: number) {
       if (personalDataConsents < 0 || personalDataConsents > 2) {
         throw `param value ${personalDataConsents} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
       }
@@ -173,7 +176,7 @@ class UspcaSection {
       return this;
     }
 
-    setMspaCoveredTransaction(mspaCoveredTransaction) {
+    setMspaCoveredTransaction(mspaCoveredTransaction: number) {
       if (mspaCoveredTransaction < 0 || mspaCoveredTransaction > 2) {
         throw `param value ${mspaCoveredTransaction} of setMspaCoveredTransaction method must be a non-negative integer between 0 and 2`;
       }
@@ -184,7 +187,7 @@ class UspcaSection {
       return this;
     }
 
-    setMspaOptOutOptionMode(mspaOptOutOptionMode) {
+    setMspaOptOutOptionMode(mspaOptOutOptionMode: number) {
       if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) {
         throw `param value ${mspaOptOutOptionMode} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
       }
@@ -195,7 +198,7 @@ class UspcaSection {
       return this;
     }
 
-    setMspaServiceProviderMode(mspaServiceProviderMode) {
+    setMspaServiceProviderMode(mspaServiceProviderMode: number) {
       if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) {
         throw `param value ${mspaServiceProviderMode} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
       }
@@ -225,17 +228,17 @@ class UspcaSection {
   };
 
   constructor(
-    saleOptOutNotice,
-    sharingOptOutNotice,
-    sensitiveDataLimitUseNotice,
-    saleOptOut,
-    sharingOptOut,
-    sensitiveDataProcessing,
-    knownChildSensitiveDataConsents,
-    personalDataConsents,
-    mspaCoveredTransaction,
-    mspaOptOutOptionMode,
-    mspaServiceProviderMode
+    saleOptOutNotice: IntegerFixedLength,
+    sharingOptOutNotice: IntegerFixedLength,
+    sensitiveDataLimitUseNotice: IntegerFixedLength,
+    saleOptOut: IntegerFixedLength,
+    sharingOptOut: IntegerFixedLength,
+    sensitiveDataProcessing: NBitfield,
+    knownChildSensitiveDataConsents: NBitfield,
+    personalDataConsents: IntegerFixedLength,
+    mspaCoveredTransaction: IntegerFixedLength,
+    mspaOptOutOptionMode: IntegerFixedLength,
+    mspaServiceProviderMode: IntegerFixedLength
   ) {
     this.#saleOptOutNotice = saleOptOutNotice;
     this.#sharingOptOutNotice = sharingOptOutNotice;
@@ -252,7 +255,7 @@ class UspcaSection {
 
   encode2BitStr() {
     let bitStr = "";
-    bitStr += this.version.encode2BitStr();
+    bitStr += this.#version.encode2BitStr();
     bitStr += this.#saleOptOutNotice.encode2BitStr();
     bitStr += this.#sharingOptOutNotice.encode2BitStr();
     bitStr += this.#sensitiveDataLimitUseNotice.encode2BitStr();
@@ -266,6 +269,14 @@ class UspcaSection {
     bitStr += this.#mspaServiceProviderMode.encode2BitStr();
     // const b64 = Buffer.from(bitStr, "base64url");
     return bitStr;
+  }
+
+  getGPPSectionID() {
+    return this.#gppSectionID;
+  }
+
+  getClientSideAPIPrefix() {
+    return this.#clientSideAPIPrefix;
   }
 }
 

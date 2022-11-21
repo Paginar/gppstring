@@ -1,4 +1,5 @@
 import { IntegerFixedLength, RangeFibonacci } from "./data-types";
+import { Section } from "./section";
 
 const GPP_TYPE = 3;
 const GPP_VERSION = 1;
@@ -11,15 +12,15 @@ class GPPHeader {
     .setLength(6)
     .setValue(GPP_VERSION)
     .build();
-  #sections = null;
+  #sections;
 
-  constructor(sections) {
-    if (!Array.isArray(sections) || sections.length === 0) {
+  constructor(sectionsIDArray: number[]) {
+    if (!Array.isArray(sectionsIDArray) || sectionsIDArray.length === 0) {
       throw `sections must be an Array sections IDs of length > 0, for example: [2, 6]`;
     }
     const rangeFibonacci = new RangeFibonacci.Builder();
-    for (let n = 0; n < sections.length; n++) {
-      rangeFibonacci.addSingle(sections[n]);
+    for (let n = 0; n < sectionsIDArray.length; n++) {
+      rangeFibonacci.addSingle(sectionsIDArray[n]);
     }
     this.#sections = rangeFibonacci.build();
   }

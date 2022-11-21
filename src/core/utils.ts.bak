@@ -1,18 +1,18 @@
-export function dec2bin(dec) {
-  return dec.toString(2);
+export function int2BinStr(value: number) {
+  return value.toString(2);
 }
 
-export function isOverflowed(value, length) {
-  return dec2bin(value).length > length;
+export function isOverflowed(value: number, length: number) {
+  return int2BinStr(value).length > length;
 }
 
-export function int2Fibonacci(n) {
-  const fib = new Array(n);
+export function int2Fibonacci(value: number) {
+  const fib = new Array(value);
 
   function largestFiboLessOrEqual(num) {
     fib[0] = 1;
     fib[1] = 2;
-    let i;
+    let i: number;
     // eslint-disable-next-line no-plusplus
     for (i = 2; fib[i - 1] <= num; i++) {
       fib[i] = fib[i - 1] + fib[i - 2];
@@ -40,28 +40,30 @@ export function int2Fibonacci(n) {
     // Return pointer to codeword
     return string;
   }
-  const code = fibonacciEncode(n);
+  const code = fibonacciEncode(value);
   return code;
 }
 
-export function encode2BitStr2Base64Websafe(bitStr) {
+export function encodeBitStr2Base64Websafe(bitStr: string) {
   let fibcode = bitStr;
   fibcode = padString6bits(fibcode);
   const fibcodeDivided = fibcode.match(/.{1,6}/g);
   return fibcodeDivided
-    .map((str) => {
-      // console.log(parseInt(str, 2) + 65);
-      return String.fromCharCode(parseInt(str, 2) + 65);
-    })
-    .join("");
+    ? fibcodeDivided
+        .map((str) => {
+          // console.log(parseInt(str, 2) + 65);
+          return String.fromCharCode(parseInt(str, 2) + 65);
+        })
+        .join("")
+    : "";
 }
 
-function padString6bits(string) {
-  let mod = string.length % 6;
+function padString6bits(value: string) {
+  const mod = value.length % 6;
   // We don't require any padding
-  if (!mod) return string;
+  if (!mod) return value;
   // See how much padding we need
-  let rem = 6 - mod;
-  let pad = "".padEnd(rem, "0");
-  return string + pad;
+  const rem = 6 - mod;
+  const pad = "".padEnd(rem, "0");
+  return value + pad;
 }

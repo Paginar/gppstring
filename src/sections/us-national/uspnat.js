@@ -1,160 +1,160 @@
-// eslint-disable-next-line max-classes-per-file
-import {
-  Boolean,
-  IntegerFixedLength,
-  RangeFibonacci,
-  NBitfield,
-} from "../../../core/data-types";
+// // eslint-disable-next-line max-classes-per-file
+// import {
+//   Boolean,
+//   IntegerFixedLength,
+//   RangeFibonacci,
+//   NBitfield,
+// } from "../../../core/data-types";
 
-class UspnatSection {
-  #prefix = "uspnat";
+// class UspnatSection {
+//   #prefix = "uspnat";
 
-  #lspa = "Y";
+//   #lspa = "Y";
 
-  #section_id = 7;
+//   #section_id = 7;
 
-  #version = "1";
+//   #version = "1";
 
-  #sharingNotice = "Y";
+//   #sharingNotice = "Y";
 
-  #saleOptOutNotice = "Y";
+//   #saleOptOutNotice = "Y";
 
-  #sharingOptOutNotice = "Y";
+//   #sharingOptOutNotice = "Y";
 
-  #targetedAdvertisingOptOutNotice = "Y";
+//   #targetedAdvertisingOptOutNotice = "Y";
 
-  #sensitiveDataProcessingOptOutNotice = "Y";
+//   #sensitiveDataProcessingOptOutNotice = "Y";
 
-  #sensitiveDataLimitUseNotice = "Y";
+//   #sensitiveDataLimitUseNotice = "Y";
 
-  #saleOptOut = "Y";
+//   #saleOptOut = "Y";
 
-  #sharingOptOut = "Y";
+//   #sharingOptOut = "Y";
 
-  #targetedAdvertisingOptOut = "Y";
+//   #targetedAdvertisingOptOut = "Y";
 
-  #sensitiveDataProcessing = "Y";
+//   #sensitiveDataProcessing = "Y";
 
-  #knownChildSensitiveDataConsents = "Y";
+//   #knownChildSensitiveDataConsents = "Y";
 
-  #personalDataConsents = "Y";
+//   #personalDataConsents = "Y";
 
-  #mspaCoveredTransaction = "Y";
+//   #mspaCoveredTransaction = "Y";
 
-  #mspaOptOutOptionMode = "Y";
+//   #mspaOptOutOptionMode = "Y";
 
-  #mspaServiceProviderMode = "Y";
+//   #mspaServiceProviderMode = "Y";
 
-  static Builder = class {
-    #prefix = "uspnat";
+//   static Builder = class {
+//     #prefix = "uspnat";
 
-    #lspa = "Y";
+//     #lspa = "Y";
 
-    #section_id = 7;
+//     #section_id = 7;
 
-    #version = "1";
+//     #version = "1";
 
-    #sharingNotice = "Y";
+//     #sharingNotice = "Y";
 
-    #saleOptOutNotice = "Y";
+//     #saleOptOutNotice = "Y";
 
-    #sharingOptOutNotice = "Y";
+//     #sharingOptOutNotice = "Y";
 
-    #targetedAdvertisingOptOutNotice = "Y";
+//     #targetedAdvertisingOptOutNotice = "Y";
 
-    #sensitiveDataProcessingOptOutNotice = "Y";
+//     #sensitiveDataProcessingOptOutNotice = "Y";
 
-    #sensitiveDataLimitUseNotice = "Y";
+//     #sensitiveDataLimitUseNotice = "Y";
 
-    #saleOptOut = "Y";
+//     #saleOptOut = "Y";
 
-    #sharingOptOut = "Y";
+//     #sharingOptOut = "Y";
 
-    #targetedAdvertisingOptOut = "Y";
+//     #targetedAdvertisingOptOut = "Y";
 
-    #sensitiveDataProcessing = "Y";
+//     #sensitiveDataProcessing = "Y";
 
-    #knownChildSensitiveDataConsents = "Y";
+//     #knownChildSensitiveDataConsents = "Y";
 
-    #personalDataConsents = "Y";
+//     #personalDataConsents = "Y";
 
-    #mspaCoveredTransaction = "Y";
+//     #mspaCoveredTransaction = "Y";
 
-    #mspaOptOutOptionMode = "Y";
+//     #mspaOptOutOptionMode = "Y";
 
-    #mspaServiceProviderMode = "Y";
+//     #mspaServiceProviderMode = "Y";
 
-    setVersion(version) {
-      this.#version = version;
+//     setVersion(version) {
+//       this.#version = version;
 
-      return this;
-    }
+//       return this;
+//     }
 
-    setSaleOptOutNotice(saleOptOutNotice) {
-      if (saleOptOutNotice >= 0 && saleOptOutNotice <= 2) {
-        throw `param value ${saleOptOutNotice} of ${
-          this.#prefix
-        } setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
-      }
+//     setSaleOptOutNotice(saleOptOutNotice) {
+//       if (saleOptOutNotice >= 0 && saleOptOutNotice <= 2) {
+//         throw `param value ${saleOptOutNotice} of ${
+//           this.#prefix
+//         } setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
+//       }
 
-      this.#saleOptOutNotice = saleOptOutNotice;
+//       this.#saleOptOutNotice = saleOptOutNotice;
 
-      return this;
-    }
+//       return this;
+//     }
 
-    setSaleOptOut(saleOptOut) {
-      if (saleOptOut >= 0 && saleOptOut <= 2) {
-        throw `param value ${saleOptOut} of ${
-          this.#prefix
-        } setSaleOptOut method must be a non-negative integer between 0 and 2`;
-      }
+//     setSaleOptOut(saleOptOut) {
+//       if (saleOptOut >= 0 && saleOptOut <= 2) {
+//         throw `param value ${saleOptOut} of ${
+//           this.#prefix
+//         } setSaleOptOut method must be a non-negative integer between 0 and 2`;
+//       }
 
-      this.#saleOptOut = saleOptOut;
+//       this.#saleOptOut = saleOptOut;
 
-      return this;
-    }
+//       return this;
+//     }
 
-    setLspa(lspa) {
-      if (lspa >= 0 && lspa <= 2) {
-        throw `param value ${lspa} of ${
-          this.#prefix
-        } setLspa method must be a non-negative integer between 0 and 2`;
-      }
+//     setLspa(lspa) {
+//       if (lspa >= 0 && lspa <= 2) {
+//         throw `param value ${lspa} of ${
+//           this.#prefix
+//         } setLspa method must be a non-negative integer between 0 and 2`;
+//       }
 
-      this.#lspa = lspa;
+//       this.#lspa = lspa;
 
-      return this;
-    }
+//       return this;
+//     }
 
-    build() {
-      const gppString = new UspnatSection(
-        this.#version,
-        this.#saleOptOutNotice,
-        this.#saleOptOut,
-        this.#lspa
-      );
-      return gppString;
-    }
-  };
+//     build() {
+//       const gppString = new UspnatSection(
+//         this.#version,
+//         this.#saleOptOutNotice,
+//         this.#saleOptOut,
+//         this.#lspa
+//       );
+//       return gppString;
+//     }
+//   };
 
-  constructor(version, saleOptOutNotice, saleOptOut, lspa) {
-    this.#version = version;
-    this.#saleOptOutNotice = saleOptOutNotice;
-    this.#saleOptOut = saleOptOut;
-    this.#lspa = lspa;
-  }
+//   constructor(version, saleOptOutNotice, saleOptOut, lspa) {
+//     this.#version = version;
+//     this.#saleOptOutNotice = saleOptOutNotice;
+//     this.#saleOptOut = saleOptOut;
+//     this.#lspa = lspa;
+//   }
 
-  encode2BitStr() {
-    const bitStr = `
-    ${this.#version}
-    ${this.#saleOptOutNotice}
-    ${this.#saleOptOut}
-    ${this.#lspa}`;
-    const b64 = btoa(bitStr);
+//   encode2BitStr() {
+//     const bitStr = `
+//     ${this.#version}
+//     ${this.#saleOptOutNotice}
+//     ${this.#saleOptOut}
+//     ${this.#lspa}`;
+//     const b64 = btoa(bitStr);
 
-    //
-    return b64 + "~" + bitStr;
-  }
-}
+//     //
+//     return b64 + "~" + bitStr;
+//   }
+// }
 
-export { UspnatSection };
+// export { UspnatSection };

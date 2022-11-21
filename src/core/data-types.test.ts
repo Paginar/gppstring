@@ -1,4 +1,3 @@
-//const t = require("./");
 import {
   Boolean,
   IntegerFixedLength,
@@ -25,11 +24,13 @@ test("Initialize Boolean to false", () => {
 });
 
 test("Initialize Boolean to truthy", () => {
+  // @ts-expect-error: this would trigger a compiler error
   const bool = new Boolean.Builder().setValue("false").build();
   expect(bool.encode2BitStr()).toBe("1");
 });
 
 test("Initialize Boolean to falsey", () => {
+  // @ts-expect-error: this would trigger a compiler error
   const bool = new Boolean.Builder().setValue(undefined).build();
   expect(bool.encode2BitStr()).toBe("0");
 });
@@ -120,14 +121,14 @@ test("StringFixedLength of value 'kkk'", () => {
 //
 
 test("Datetime of value January 01 1970 00:00:00 UTC", () => {
-  let date = new Date(0);
+  const date = new Date(0);
   expect(new Datetime.Builder().setValue(date).build().encode2BitStr()).toBe(
     "000000000000000000000000000000000000"
   );
 });
 
 test("Datetime of value January 01 2022 00:00:00 UTC", () => {
-  let date = new Date(2022, 0, 1);
+  const date = new Date(2022, 0, 1);
   expect(new Datetime.Builder().setValue(date).build().encode2BitStr()).toBe(
     "001111010010000111011010010011100000"
   );

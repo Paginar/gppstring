@@ -1,10 +1,10 @@
-function $61b2c0b7337ba1fd$export$d4369ef446c0648(dec) {
-    return dec.toString(2);
+function $b2810d788e58d7b1$export$260005ef9abed4f9(value) {
+    return value.toString(2);
 }
-function $61b2c0b7337ba1fd$export$f97412ca1b01c8a6(value, length) {
-    return $61b2c0b7337ba1fd$export$d4369ef446c0648(value).length > length;
+function $b2810d788e58d7b1$export$f97412ca1b01c8a6(value, length) {
+    return $b2810d788e58d7b1$export$260005ef9abed4f9(value).length > length;
 }
-function $61b2c0b7337ba1fd$export$e4deb62a27b498b6(n) {
+function $b2810d788e58d7b1$export$e4deb62a27b498b6(n) {
     const fib = new Array(n);
     function largestFiboLessOrEqual(num) {
         fib[0] = 1;
@@ -37,31 +37,39 @@ function $61b2c0b7337ba1fd$export$e4deb62a27b498b6(n) {
     const code = fibonacciEncode(n);
     return code;
 }
-function $61b2c0b7337ba1fd$export$55d61ca8b429bfd7(bitStr) {
+function $b2810d788e58d7b1$export$178686dac66edb4b(bitStr) {
     let fibcode = bitStr;
-    fibcode = $61b2c0b7337ba1fd$var$padString6bits(fibcode);
+    fibcode = $b2810d788e58d7b1$var$padString6bits(fibcode);
     const fibcodeDivided = fibcode.match(/.{1,6}/g);
-    return fibcodeDivided.map((str)=>{
+    return fibcodeDivided ? fibcodeDivided.map((str)=>{
         // console.log(parseInt(str, 2) + 65);
         return String.fromCharCode(parseInt(str, 2) + 65);
-    }).join("");
+    }).join("") : "";
 }
-function $61b2c0b7337ba1fd$var$padString6bits(string) {
-    let mod = string.length % 6;
+function $b2810d788e58d7b1$var$padString6bits(string) {
+    const mod = string.length % 6;
     // We don't require any padding
     if (!mod) return string;
     // See how much padding we need
-    let rem = 6 - mod;
-    let pad = "".padEnd(rem, "0");
+    const rem = 6 - mod;
+    const pad = "".padEnd(rem, "0");
     return string + pad;
 }
 
 
+let //
+// Global
+//
+$76a5b3f1d5ebb236$var$RangeItemType;
+(function(RangeItemType) {
+    RangeItemType["SINGLE"] = "0";
+    RangeItemType["GROUP"] = "1";
+})($76a5b3f1d5ebb236$var$RangeItemType || ($76a5b3f1d5ebb236$var$RangeItemType = {}));
 //
 // Boolean
 //
-class $ecd920c23ec3debc$export$f9e6d957cb90bdc0 {
-    #value = null;
+class $76a5b3f1d5ebb236$export$f9e6d957cb90bdc0 {
+    #value = false;
     static Builder = class {
         #value = false;
         setValue(value) {
@@ -69,7 +77,7 @@ class $ecd920c23ec3debc$export$f9e6d957cb90bdc0 {
             return this;
         }
         build() {
-            const boolean = new $ecd920c23ec3debc$export$f9e6d957cb90bdc0(this.#value);
+            const boolean = new $76a5b3f1d5ebb236$export$f9e6d957cb90bdc0(this.#value);
             return boolean;
         }
     };
@@ -89,10 +97,10 @@ class $ecd920c23ec3debc$export$f9e6d957cb90bdc0 {
 //
 // IntegerFixedLength
 //
-class $ecd920c23ec3debc$export$7b426f8413b91275 {
-    #value = null;
-    #length = null;
-    static Builder = class {
+class $76a5b3f1d5ebb236$export$7b426f8413b91275 {
+    #value;
+    #length;
+    static Builder = class Builder {
         #value = 0;
         #length = 1;
         setLength(length = 1) {
@@ -108,12 +116,12 @@ class $ecd920c23ec3debc$export$7b426f8413b91275 {
             return this;
         }
         build() {
-            const integer = new $ecd920c23ec3debc$export$7b426f8413b91275(this.#value, this.#length);
+            const integer = new $76a5b3f1d5ebb236$export$7b426f8413b91275(this.#value, this.#length);
             return integer;
         }
         #checkIfTruncated(value, length) {
-            const binString = (0, $61b2c0b7337ba1fd$export$d4369ef446c0648)(value);
-            if ((0, $61b2c0b7337ba1fd$export$f97412ca1b01c8a6)(value, length)) throw `Truncation error, length must be larger than ${binString.length} for value ${value}`;
+            const binString = (0, $b2810d788e58d7b1$export$260005ef9abed4f9)(value);
+            if ((0, $b2810d788e58d7b1$export$f97412ca1b01c8a6)(value, length)) throw `Truncation error, length must be larger than ${binString.length} for value ${value}`;
         }
     };
     constructor(value, length){
@@ -127,7 +135,7 @@ class $ecd920c23ec3debc$export$7b426f8413b91275 {
         });
     }
     encode2BitStr() {
-        const binString = (0, $61b2c0b7337ba1fd$export$d4369ef446c0648)(this.#value);
+        const binString = (0, $b2810d788e58d7b1$export$260005ef9abed4f9)(this.#value);
         return binString.padStart(this.#length, "0");
     }
 }
@@ -137,8 +145,8 @@ class $ecd920c23ec3debc$export$7b426f8413b91275 {
 // Integer encoded using Fibonacci encoding
 // See “About Fibonacci Encoding” for more detail
 // https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
-class $ecd920c23ec3debc$export$1b157374afb6d863 {
-    #value = null;
+class $76a5b3f1d5ebb236$export$1b157374afb6d863 {
+    #value = 0;
     static Builder = class {
         #value = 0;
         setValue(value) {
@@ -147,7 +155,7 @@ class $ecd920c23ec3debc$export$1b157374afb6d863 {
             return this;
         }
         build() {
-            const integer = new $ecd920c23ec3debc$export$1b157374afb6d863(this.#value);
+            const integer = new $76a5b3f1d5ebb236$export$1b157374afb6d863(this.#value);
             return integer;
         }
     };
@@ -160,7 +168,7 @@ class $ecd920c23ec3debc$export$1b157374afb6d863 {
         });
     }
     encode2BitStr() {
-        return (0, $61b2c0b7337ba1fd$export$e4deb62a27b498b6)(this.#value);
+        return (0, $b2810d788e58d7b1$export$e4deb62a27b498b6)(this.#value);
     }
 }
 //
@@ -168,8 +176,8 @@ class $ecd920c23ec3debc$export$1b157374afb6d863 {
 //
 // A fixed amount of bit representing a string. The character’s ASCII integer ID is subtracted by 65 and encoded into an int(6).
 // Example: int(6) “101010” represents integer 47 + 65 = char “h”
-class $ecd920c23ec3debc$export$9ad0fa6611c6655f {
-    #value = null;
+class $76a5b3f1d5ebb236$export$9ad0fa6611c6655f {
+    #value = "";
     static Builder = class {
         #value = "";
         setValue(value) {
@@ -177,7 +185,7 @@ class $ecd920c23ec3debc$export$9ad0fa6611c6655f {
             return this;
         }
         build() {
-            return new $ecd920c23ec3debc$export$9ad0fa6611c6655f(this.#value);
+            return new $76a5b3f1d5ebb236$export$9ad0fa6611c6655f(this.#value);
         }
     };
     constructor(value){
@@ -191,8 +199,8 @@ class $ecd920c23ec3debc$export$9ad0fa6611c6655f {
     encode2BitStr() {
         let encodedString = "";
         let int6;
-        for (let char of this.#value){
-            int6 = new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(6).setValue(char.charCodeAt(0) - 65).build();
+        for (const char of this.#value){
+            int6 = new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(6).setValue(char.charCodeAt(0) - 65).build();
             encodedString += int6.encode2BitStr();
         }
         return encodedString;
@@ -203,17 +211,17 @@ class $ecd920c23ec3debc$export$9ad0fa6611c6655f {
 //
 // A datetime is encoded as a 36 bit integer representing the 1/10th seconds since January 01 1970 00:00:00 UTC.
 // Example JavaScript representation: Math.round((new Date()).getTime()/100)
-class $ecd920c23ec3debc$export$8bb43bf38ef50c79 {
-    #value = null;
+class $76a5b3f1d5ebb236$export$8bb43bf38ef50c79 {
+    #value = new Date();
     static Builder = class {
-        #value = null;
+        #value = new Date();
         setValue(value) {
-            if (!value instanceof Date) throw "value param must be an Date";
+            if (!(value instanceof Date)) throw "value param must be an Date";
             this.#value = value;
             return this;
         }
         build() {
-            return new $ecd920c23ec3debc$export$8bb43bf38ef50c79(this.#value);
+            return new $76a5b3f1d5ebb236$export$8bb43bf38ef50c79(this.#value);
         }
     };
     constructor(value){
@@ -225,14 +233,14 @@ class $ecd920c23ec3debc$export$8bb43bf38ef50c79 {
         });
     }
     encode2BitStr() {
-        let int36 = new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(36).setValue(Math.round(this.#value.getTime() / 100)).build();
+        const int36 = new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(36).setValue(Math.round(this.#value.getTime() / 100)).build();
         return int36.encode2BitStr();
     }
 }
 //
 // RangeInteger
 //
-class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
+class $76a5b3f1d5ebb236$export$f7b8a6f27fd22b77 {
     #items = [];
     #SINGLE = "0";
     #GROUP = "1";
@@ -245,7 +253,7 @@ class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
             if (!Number.isInteger(value)) throw "value param must be an integer";
             if (value <= this.#lastValue) throw "Values must be added in sorted ascending order";
             this.#items.push({
-                type: this.#SINGLE,
+                type: $76a5b3f1d5ebb236$var$RangeItemType.SINGLE,
                 value: value
             });
             this.#lastValue = value;
@@ -257,7 +265,7 @@ class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
             if (fromValue >= toValue) throw "fromValue must be lower than toValue";
             if (fromValue <= this.#lastValue) throw "Values must be added in sorted ascending order";
             this.#items.push({
-                type: this.#GROUP,
+                type: $76a5b3f1d5ebb236$var$RangeItemType.GROUP,
                 fromValue: fromValue,
                 toValue: toValue
             });
@@ -265,7 +273,7 @@ class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
             return this;
         }
         build() {
-            return new $ecd920c23ec3debc$export$f7b8a6f27fd22b77(this.#items);
+            return new $76a5b3f1d5ebb236$export$f7b8a6f27fd22b77(this.#items);
         }
     };
     constructor(items){
@@ -278,17 +286,17 @@ class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
     }
     encode2BitStr() {
         let encodedRange = "";
-        encodedRange += new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(12).setValue(this.#items.length).build().encode2BitStr();
+        encodedRange += new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(12).setValue(this.#items.length).build().encode2BitStr();
         let lastValue = 0;
-        this.#items.forEach((item, index)=>{
-            if (item.type === this.#SINGLE) {
+        this.#items.forEach((item)=>{
+            if (item.type === $76a5b3f1d5ebb236$var$RangeItemType.SINGLE) {
                 encodedRange += this.#SINGLE;
-                encodedRange += new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(16).setValue(item.value - lastValue).build().encode2BitStr();
+                encodedRange += new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(16).setValue(item.value - lastValue).build().encode2BitStr();
                 lastValue = item.value;
-            } else if (item.type === this.#GROUP) {
+            } else if (item.type === $76a5b3f1d5ebb236$var$RangeItemType.GROUP) {
                 encodedRange += this.#GROUP;
-                encodedRange += new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(16).setValue(item.fromValue - lastValue).build().encode2BitStr();
-                encodedRange += new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(16).setValue(item.toValue - item.fromValue).build().encode2BitStr();
+                encodedRange += new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(16).setValue(item.fromValue - lastValue).build().encode2BitStr();
+                encodedRange += new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(16).setValue(item.toValue - item.fromValue).build().encode2BitStr();
                 lastValue = item.toValue;
             }
         });
@@ -298,20 +306,16 @@ class $ecd920c23ec3debc$export$f7b8a6f27fd22b77 {
 //
 // RangeFibonacci
 //
-class $ecd920c23ec3debc$export$ffae1305b5a642f3 {
+class $76a5b3f1d5ebb236$export$ffae1305b5a642f3 {
     #items = [];
-    #SINGLE = "0";
-    #GROUP = "1";
     static Builder = class {
         #items = [];
         #lastValue = 0;
-        #SINGLE = "0";
-        #GROUP = "1";
         addSingle(value) {
             if (!Number.isInteger(value)) throw "value param must be an integer";
             if (value <= this.#lastValue) throw "Values must be added in sorted ascending order";
             this.#items.push({
-                type: this.#SINGLE,
+                type: $76a5b3f1d5ebb236$var$RangeItemType.SINGLE,
                 value: value
             });
             this.#lastValue = value;
@@ -323,7 +327,7 @@ class $ecd920c23ec3debc$export$ffae1305b5a642f3 {
             if (fromValue >= toValue) throw "fromValue must be lower than toValue";
             if (fromValue <= this.#lastValue) throw "Values must be added in sorted ascending order";
             this.#items.push({
-                type: this.#GROUP,
+                type: $76a5b3f1d5ebb236$var$RangeItemType.GROUP,
                 fromValue: fromValue,
                 toValue: toValue
             });
@@ -331,7 +335,7 @@ class $ecd920c23ec3debc$export$ffae1305b5a642f3 {
             return this;
         }
         build() {
-            const rangeFibonacci = new $ecd920c23ec3debc$export$ffae1305b5a642f3(this.#items);
+            const rangeFibonacci = new $76a5b3f1d5ebb236$export$ffae1305b5a642f3(this.#items);
             return rangeFibonacci;
         }
     };
@@ -345,17 +349,17 @@ class $ecd920c23ec3debc$export$ffae1305b5a642f3 {
     }
     encode2BitStr() {
         let encodedRange = "";
-        encodedRange += new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(12).setValue(this.#items.length).build().encode2BitStr();
+        encodedRange += new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(12).setValue(this.#items.length).build().encode2BitStr();
         let lastValue = 0;
-        this.#items.forEach((item, index)=>{
-            if (item.type === this.#SINGLE) {
-                encodedRange += this.#SINGLE;
-                encodedRange += (0, $61b2c0b7337ba1fd$export$e4deb62a27b498b6)(item.value - lastValue);
+        this.#items.forEach((item)=>{
+            if (item.type === $76a5b3f1d5ebb236$var$RangeItemType.SINGLE) {
+                encodedRange += item.type;
+                encodedRange += (0, $b2810d788e58d7b1$export$e4deb62a27b498b6)(item.value - lastValue);
                 lastValue = item.value;
-            } else if (item.type === this.#GROUP) {
-                encodedRange += this.#GROUP;
-                encodedRange += (0, $61b2c0b7337ba1fd$export$e4deb62a27b498b6)(item.fromValue - lastValue);
-                encodedRange += (0, $61b2c0b7337ba1fd$export$e4deb62a27b498b6)(item.toValue - item.fromValue);
+            } else if (item.type === $76a5b3f1d5ebb236$var$RangeItemType.GROUP) {
+                encodedRange += item.type;
+                encodedRange += (0, $b2810d788e58d7b1$export$e4deb62a27b498b6)(item.fromValue - lastValue);
+                encodedRange += (0, $b2810d788e58d7b1$export$e4deb62a27b498b6)(item.toValue - item.fromValue);
                 lastValue = item.toValue;
             }
         });
@@ -365,9 +369,9 @@ class $ecd920c23ec3debc$export$ffae1305b5a642f3 {
 //
 // NBitField
 //
-class $ecd920c23ec3debc$export$f222bea123aa0987 {
-    #nBits = null;
-    #nBitSize = null;
+class $76a5b3f1d5ebb236$export$f222bea123aa0987 {
+    #nBits = [];
+    #nBitSize = 1;
     static Builder = class {
         #nBits = [];
         #nBitSize = 1;
@@ -380,17 +384,20 @@ class $ecd920c23ec3debc$export$f222bea123aa0987 {
         setNumBits(numBits) {
             if (!Number.isInteger(numBits) && numBits > 0) throw "numBits param must be a positive integer";
             this.#numBits = numBits;
-            for(let i = 0; i < numBits; i++)this.#nBits.push("0".padStart(this.#nBitSize, "0"));
+            for(let i = 0; i < numBits; i++){
+                const integerFixedLength = new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(this.#nBitSize).setValue(0).build();
+                this.#nBits.push(integerFixedLength);
+            }
             return this;
         }
         setNBit(position, value) {
             if (!Number.isInteger(position) && position >= 1 && position <= this.#numBits) throw `position param must be a positive integer, from 1 to ${this.#numBits}`;
-            const integerFixedLength = new $ecd920c23ec3debc$export$7b426f8413b91275.Builder().setLength(this.#nBitSize).setValue(value).build();
+            const integerFixedLength = new $76a5b3f1d5ebb236$export$7b426f8413b91275.Builder().setLength(this.#nBitSize).setValue(value).build();
             this.#nBits[position - 1] = integerFixedLength;
             return this;
         }
         build() {
-            const nBitfield = new $ecd920c23ec3debc$export$f222bea123aa0987(this.#nBitSize, this.#nBits);
+            const nBitfield = new $76a5b3f1d5ebb236$export$f222bea123aa0987(this.#nBitSize, this.#nBits);
             return nBitfield;
         }
     };
@@ -414,14 +421,16 @@ class $ecd920c23ec3debc$export$f222bea123aa0987 {
 }
 
 
-class $cab26d8d85f1fca5$export$22fa760b01b36630 {
-    #type = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(6).setValue(3).build();
-    #version = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(6).setValue(1).build();
-    #sections = null;
-    constructor(sections){
-        if (!Array.isArray(sections) || sections.length === 0) throw `sections must be an Array sections IDs of length > 0, for example: [2, 6]`;
-        const rangeFibonacci = new (0, $ecd920c23ec3debc$export$ffae1305b5a642f3).Builder();
-        for(let n = 0; n < sections.length; n++)rangeFibonacci.addSingle(sections[n]);
+const $5e6513c9ffe54733$var$GPP_TYPE = 3;
+const $5e6513c9ffe54733$var$GPP_VERSION = 1;
+class $5e6513c9ffe54733$export$22fa760b01b36630 {
+    #type = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(6).setValue($5e6513c9ffe54733$var$GPP_TYPE).build();
+    #version = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(6).setValue($5e6513c9ffe54733$var$GPP_VERSION).build();
+    #sections;
+    constructor(sectionsIDArray){
+        if (!Array.isArray(sectionsIDArray) || sectionsIDArray.length === 0) throw `sections must be an Array sections IDs of length > 0, for example: [2, 6]`;
+        const rangeFibonacci = new (0, $76a5b3f1d5ebb236$export$ffae1305b5a642f3).Builder();
+        for(let n = 0; n < sectionsIDArray.length; n++)rangeFibonacci.addSingle(sectionsIDArray[n]);
         this.#sections = rangeFibonacci.build();
     }
     encode2BitStr() {
@@ -435,18 +444,16 @@ class $cab26d8d85f1fca5$export$22fa760b01b36630 {
 
 
 
-const $da8e9714ddaa8e30$var$GPP_TYPE = 3;
-const $da8e9714ddaa8e30$var$GPP_VERSION = 1;
-class $da8e9714ddaa8e30$export$9a6fd65b2eb16632 {
+class $c138931464f969ce$export$9a6fd65b2eb16632 {
     #sections = new Map();
     static Builder = class {
         #sections = new Map();
         addSection(section) {
-            this.#sections.set(section.gppSectionID, section);
+            this.#sections.set(section.getGPPSectionID(), section);
             return this;
         }
         build() {
-            return new $da8e9714ddaa8e30$export$9a6fd65b2eb16632(this.#sections);
+            return new $c138931464f969ce$export$9a6fd65b2eb16632(this.#sections);
         }
     };
     constructor(sections){
@@ -456,18 +463,18 @@ class $da8e9714ddaa8e30$export$9a6fd65b2eb16632 {
         let encodedString = "";
         if (this.#sections.size === 0) throw "You need to add sections to be able to build the GPP string";
         const sortedSections = this.#sortSections();
-        const encodedHeader = new (0, $cab26d8d85f1fca5$export$22fa760b01b36630)(Array.from(sortedSections.keys()));
+        const encodedHeader = new (0, $5e6513c9ffe54733$export$22fa760b01b36630)(Array.from(sortedSections.keys()));
         encodedString += encodedHeader.encode2BitStr();
-        for (const [key, value] of this.#sections)encodedString += "~" + value.encode2BitStr();
+        for (const [, value] of this.#sections)encodedString += "~" + value.encode2BitStr();
         return encodedString;
     }
     encode2Base64Websafe() {
         let encodedString = "";
         if (this.#sections.size === 0) throw "You need to add sections to be able to build the GPP string";
         const sortedSections = this.#sortSections();
-        const encodedHeader = new (0, $cab26d8d85f1fca5$export$22fa760b01b36630)(Array.from(sortedSections.keys()));
-        encodedString += (0, $61b2c0b7337ba1fd$export$55d61ca8b429bfd7)(encodedHeader.encode2BitStr());
-        for (const [key, value] of this.#sections)encodedString += "~" + (0, $61b2c0b7337ba1fd$export$55d61ca8b429bfd7)(value.encode2BitStr());
+        const encodedHeader = new (0, $5e6513c9ffe54733$export$22fa760b01b36630)(Array.from(sortedSections.keys()));
+        encodedString += (0, $b2810d788e58d7b1$export$178686dac66edb4b)(encodedHeader.encode2BitStr());
+        for (const [, value] of this.#sections)encodedString += "~" + (0, $b2810d788e58d7b1$export$178686dac66edb4b)(value.encode2BitStr());
         return encodedString;
     }
     toString() {
@@ -476,68 +483,68 @@ class $da8e9714ddaa8e30$export$9a6fd65b2eb16632 {
     #sortSections() {
         return new Map([
             ...this.#sections
-        ].sort((a, b)=>String(a[0]).localeCompare(b[0])));
+        ].sort((a, b)=>a[0] - b[0]));
     }
 }
 
 
 // eslint-disable-next-line max-classes-per-file
 
-class $a2e5f0a427f6496f$export$a4ff45f93802db5f {
-    gppSectionID = 8;
-    clientSideAPIPrefix = "uspca";
-    version = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(6).setValue(1).build();
-    #saleOptOutNotice = null;
-    #sharingOptOutNotice = null;
-    #sensitiveDataLimitUseNotice = null;
-    #saleOptOut = null;
-    #sharingOptOut = null;
-    #sensitiveDataProcessing = null;
-    #knownChildSensitiveDataConsents = null;
-    #personalDataConsents = null;
-    #mspaCoveredTransaction = null;
-    #mspaOptOutOptionMode = null;
-    #mspaServiceProviderMode = null;
+class $871915465498d472$export$a4ff45f93802db5f {
+    #gppSectionID = 8;
+    #clientSideAPIPrefix = "uspca";
+    #version = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(6).setValue(1).build();
+    #saleOptOutNotice;
+    #sharingOptOutNotice;
+    #sensitiveDataLimitUseNotice;
+    #saleOptOut;
+    #sharingOptOut;
+    #sensitiveDataProcessing;
+    #knownChildSensitiveDataConsents;
+    #personalDataConsents;
+    #mspaCoveredTransaction;
+    #mspaOptOutOptionMode;
+    #mspaServiceProviderMode;
     static Builder = class {
-        #saleOptOutNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #sharingOptOutNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #sensitiveDataLimitUseNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #saleOptOut = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #sharingOptOut = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #sensitiveDataProcessing = new (0, $ecd920c23ec3debc$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(9).setNBit(1, 0).setNBit(2, 0).setNBit(3, 0).setNBit(4, 0).setNBit(5, 0).setNBit(6, 0).setNBit(7, 0).setNBit(8, 0).setNBit(9, 0).build();
-        #knownChildSensitiveDataConsents = new (0, $ecd920c23ec3debc$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(2).setNBit(1, 0).setNBit(2, 0).build();
-        #personalDataConsents = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #mspaCoveredTransaction = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #mspaOptOutOptionMode = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
-        #mspaServiceProviderMode = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #saleOptOutNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #sharingOptOutNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #sensitiveDataLimitUseNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #saleOptOut = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #sharingOptOut = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #sensitiveDataProcessing = new (0, $76a5b3f1d5ebb236$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(9).setNBit(1, 0).setNBit(2, 0).setNBit(3, 0).setNBit(4, 0).setNBit(5, 0).setNBit(6, 0).setNBit(7, 0).setNBit(8, 0).setNBit(9, 0).build();
+        #knownChildSensitiveDataConsents = new (0, $76a5b3f1d5ebb236$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(2).setNBit(1, 0).setNBit(2, 0).build();
+        #personalDataConsents = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #mspaCoveredTransaction = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #mspaOptOutOptionMode = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
+        #mspaServiceProviderMode = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(0).build();
         setSaleOptOutNotice(saleOptOutNotice) {
             if (saleOptOutNotice < 0 || saleOptOutNotice > 2) throw `param value ${saleOptOutNotice} of setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
-            this.#saleOptOutNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(saleOptOutNotice).build();
+            this.#saleOptOutNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(saleOptOutNotice).build();
             return this;
         }
         setSharingOptOutNotice(sharingOptOutNotice) {
             if (sharingOptOutNotice < 0 || sharingOptOutNotice > 2) throw `param value ${sharingOptOutNotice} of setSharingOptOutNotice method must be a non-negative integer between 0 and 2`;
-            this.#sharingOptOutNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(sharingOptOutNotice).build();
+            this.#sharingOptOutNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(sharingOptOutNotice).build();
             return this;
         }
         setSensitiveDataLimitUseNotice(sensitiveDataLimitUseNotice) {
             if (sensitiveDataLimitUseNotice < 0 || sensitiveDataLimitUseNotice > 2) throw `param value ${sensitiveDataLimitUseNotice} of setSensitiveDataLimitUseNotice method must be a non-negative integer between 0 and 2`;
-            this.#sensitiveDataLimitUseNotice = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(sensitiveDataLimitUseNotice).build();
+            this.#sensitiveDataLimitUseNotice = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(sensitiveDataLimitUseNotice).build();
             return this;
         }
         setSaleOptOut(saleOptOut) {
             if (saleOptOut < 0 || saleOptOut > 2) throw `param value ${saleOptOut} of setSaleOptOut method must be a non-negative integer between 0 and 2`;
-            this.#saleOptOut = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(saleOptOut).build();
+            this.#saleOptOut = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(saleOptOut).build();
             return this;
         }
-        setSharingOptOut(sharingOptOut1) {
-            if (sharingOptOut1 < 0 || sharingOptOut1 > 2) throw `param value ${sharingOptOut1} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
-            this.#sharingOptOut = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(sharingOptOut1).build();
+        setSharingOptOut(sharingOptOut) {
+            if (sharingOptOut < 0 || sharingOptOut > 2) throw `param value ${sharingOptOut} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
+            this.#sharingOptOut = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(sharingOptOut).build();
             return this;
         }
         setSensitiveDataProcessing(sensitiveDataProcessing) {
             if (!Array.isArray(sensitiveDataProcessing) || sensitiveDataProcessing.length !== 9) throw `param in setSensitiveDataProcessing method must be an Array of length 9`;
-            const nbitfield = new (0, $ecd920c23ec3debc$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(9);
+            const nbitfield = new (0, $76a5b3f1d5ebb236$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(9);
             for(let n = 0; n < 9; n++){
                 const bitValue = sensitiveDataProcessing[n];
                 nbitfield.setNBit(n + 1, bitValue);
@@ -547,7 +554,7 @@ class $a2e5f0a427f6496f$export$a4ff45f93802db5f {
         }
         setKnownChildSensitiveDataConsents(knownChildSensitiveDataConsents) {
             if (!Array.isArray(knownChildSensitiveDataConsents) || knownChildSensitiveDataConsents.length !== 2) throw `param value ${knownChildSensitiveDataConsents} of section in setKnownChildSensitiveDataConsents method must be an Array of length 2`;
-            const nbitfield = new (0, $ecd920c23ec3debc$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(2);
+            const nbitfield = new (0, $76a5b3f1d5ebb236$export$f222bea123aa0987).Builder().setNbitSize(2).setNumBits(2);
             for(let n = 0; n < 2; n++){
                 const bitValue = knownChildSensitiveDataConsents[n];
                 nbitfield.setNBit(n + 1, bitValue);
@@ -556,36 +563,36 @@ class $a2e5f0a427f6496f$export$a4ff45f93802db5f {
             return this;
         }
         setPersonalDataConsents(personalDataConsents) {
-            if (personalDataConsents < 0 || personalDataConsents > 2) throw `param value ${sharingOptOut} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
-            this.#personalDataConsents = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(personalDataConsents).build();
+            if (personalDataConsents < 0 || personalDataConsents > 2) throw `param value ${personalDataConsents} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
+            this.#personalDataConsents = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(personalDataConsents).build();
             return this;
         }
         setMspaCoveredTransaction(mspaCoveredTransaction) {
             if (mspaCoveredTransaction < 0 || mspaCoveredTransaction > 2) throw `param value ${mspaCoveredTransaction} of setMspaCoveredTransaction method must be a non-negative integer between 0 and 2`;
-            this.#mspaCoveredTransaction = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaCoveredTransaction).build();
+            this.#mspaCoveredTransaction = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaCoveredTransaction).build();
             return this;
         }
         setMspaOptOutOptionMode(mspaOptOutOptionMode) {
-            if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) throw `param value ${sharingOptOut} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
-            this.#mspaOptOutOptionMode = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaOptOutOptionMode).build();
+            if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) throw `param value ${mspaOptOutOptionMode} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
+            this.#mspaOptOutOptionMode = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaOptOutOptionMode).build();
             return this;
         }
         setMspaServiceProviderMode(mspaServiceProviderMode) {
-            if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) throw `param value ${sharingOptOut} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
-            this.#mspaServiceProviderMode = new (0, $ecd920c23ec3debc$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaServiceProviderMode).build();
+            if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) throw `param value ${mspaServiceProviderMode} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
+            this.#mspaServiceProviderMode = new (0, $76a5b3f1d5ebb236$export$7b426f8413b91275).Builder().setLength(2).setValue(mspaServiceProviderMode).build();
             return this;
         }
         build() {
-            const gppString = new $a2e5f0a427f6496f$export$a4ff45f93802db5f(this.#saleOptOutNotice, this.#sharingOptOutNotice, this.#sensitiveDataLimitUseNotice, this.#saleOptOut, this.#sharingOptOut, this.#sensitiveDataProcessing, this.#knownChildSensitiveDataConsents, this.#personalDataConsents, this.#mspaCoveredTransaction, this.#mspaOptOutOptionMode, this.#mspaServiceProviderMode);
+            const gppString = new $871915465498d472$export$a4ff45f93802db5f(this.#saleOptOutNotice, this.#sharingOptOutNotice, this.#sensitiveDataLimitUseNotice, this.#saleOptOut, this.#sharingOptOut, this.#sensitiveDataProcessing, this.#knownChildSensitiveDataConsents, this.#personalDataConsents, this.#mspaCoveredTransaction, this.#mspaOptOutOptionMode, this.#mspaServiceProviderMode);
             return gppString;
         }
     };
-    constructor(saleOptOutNotice, sharingOptOutNotice, sensitiveDataLimitUseNotice, saleOptOut, sharingOptOut1, sensitiveDataProcessing, knownChildSensitiveDataConsents, personalDataConsents, mspaCoveredTransaction, mspaOptOutOptionMode, mspaServiceProviderMode){
+    constructor(saleOptOutNotice, sharingOptOutNotice, sensitiveDataLimitUseNotice, saleOptOut, sharingOptOut, sensitiveDataProcessing, knownChildSensitiveDataConsents, personalDataConsents, mspaCoveredTransaction, mspaOptOutOptionMode, mspaServiceProviderMode){
         this.#saleOptOutNotice = saleOptOutNotice;
         this.#sharingOptOutNotice = sharingOptOutNotice;
         this.#sensitiveDataLimitUseNotice = sensitiveDataLimitUseNotice;
         this.#saleOptOut = saleOptOut;
-        this.#sharingOptOut = sharingOptOut1;
+        this.#sharingOptOut = sharingOptOut;
         this.#sensitiveDataProcessing = sensitiveDataProcessing;
         this.#knownChildSensitiveDataConsents = knownChildSensitiveDataConsents;
         this.#personalDataConsents = personalDataConsents;
@@ -595,7 +602,7 @@ class $a2e5f0a427f6496f$export$a4ff45f93802db5f {
     }
     encode2BitStr() {
         let bitStr = "";
-        bitStr += this.version.encode2BitStr();
+        bitStr += this.#version.encode2BitStr();
         bitStr += this.#saleOptOutNotice.encode2BitStr();
         bitStr += this.#sharingOptOutNotice.encode2BitStr();
         bitStr += this.#sensitiveDataLimitUseNotice.encode2BitStr();
@@ -610,10 +617,16 @@ class $a2e5f0a427f6496f$export$a4ff45f93802db5f {
         // const b64 = Buffer.from(bitStr, "base64url");
         return bitStr;
     }
+    getGPPSectionID() {
+        return this.#gppSectionID;
+    }
+    getClientSideAPIPrefix() {
+        return this.#clientSideAPIPrefix;
+    }
 }
 
 
 
 
-export {$da8e9714ddaa8e30$export$9a6fd65b2eb16632 as GPPString, $a2e5f0a427f6496f$export$a4ff45f93802db5f as UspcaSection};
+export {$c138931464f969ce$export$9a6fd65b2eb16632 as GPPString, $871915465498d472$export$a4ff45f93802db5f as UspcaSection};
 //# sourceMappingURL=index.mjs.map
