@@ -1,2 +1,8 @@
 src/
-.babel.config.js
+babel.config.json
+jest.config.cjs
+.parcelrc
+.prettierrc
+examples
+.vscode
+.parcel-cache

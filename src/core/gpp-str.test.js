@@ -1,5 +1,5 @@
-import GPPString from "./gpp-str";
-import UspcaSection from "./sections/us-states/ca/uspca";
+import { GPPString } from "./gpp-str";
+import { UspcaSection } from "../sections/us-states/ca/uspca";
 
 test("Create an empty gpp string, must throw", () => {
   expect(() => {

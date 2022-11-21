@@ -1,5 +1,5 @@
 //const t = require("./");
-import UspcaSection from "./uspca";
+import { UspcaSection } from "./uspca";
 
 test("Create a default uspca section", () => {
   let uspca = new UspcaSection.Builder().build();

@@ -19,15 +19,39 @@ This library includes support for:
 | 11         | usut                   | US - Utah section (coming soon)           | Not yet   |
 | 12         | usct                   | US - Connecticut section (coming soon)    | Not yet   |
 
-# To do
+# Getting started
 
-- Update README with usage examples
-- Add all other sections
-- Add console logging (with different log levels)
-- Use Parcel to package to UMD/CJS/ESM
-- Convert to Typescript / add types
-- Publish to npm
-- GPP String decoder function to assist in debugging? (:thumbsdown:)
+To create a GPP string, you need to create & configure each of the Sections you want to support.
+
+For example if your application needs to support CPRA (for details see the [California's privacy rights act spec](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Sections/US-States/CA/GPP%20Extension:%20IAB%20Privacy%E2%80%99s%20California%20Privacy%20Technical%20Specification.md)) you would build a uspca section object, assigning the appropiate values to each user consent
+
+```
+import { UspcaSection } from "gppstring"
+
+let uspca = new UspcaSection.Builder()
+  .setSaleOptOutNotice(0)
+  .setSharingOptOutNotice(1)
+  .setSensitiveDataLimitUseNotice(1)
+  .setSaleOptOut(1)
+  .setSharingOptOut(1)
+  .setSensitiveDataProcessing([0, 0, 0, 0, 0, 0, 0, 0, 0])
+  .setKnownChildSensitiveDataConsents([0, 0])
+  .setPersonalDataConsents(0)
+  .setMspaCoveredTransaction(0)
+  .setMspaOptOutOptionMode(0)
+  .setMspaServiceProviderMode(0)
+  .build();
+
+let gppString = new GPPString.Builder().addSection(uspca).build();
+console.log(gppString.encode2Base64Websafe())
+
+```
+
+In the console you should see the output as a base64-websafe string: `"DBABBa~BAAAAAAA"`
+
+# Examples
+
+See the `/examples` folder for CommonJS & ESM examples.
 
 # Caveats
 
@@ -35,6 +59,17 @@ This library includes support for:
   - 0000110000010000000000010011 > DBABM (not DBABMA)
   - 000011000001000000000010001101011 > DBACNY (not DBACNYA)
   - 000011000001000000000001100011110000 > DBABdq (not DBABjw)
+
+# To do
+
+- Update README with usage examples
+- Add all other sections
+- Add console logging (with different log levels)
+- Create the localStorage key names (ie IABGPP_8_String)
+- Use Parcel to package to UMD/CJS/ESM
+- Convert to Typescript / add types
+- Publish to npm
+- GPP String decoder function to assist in debugging? (:thumbsdown:)
 
 # Contributors
 

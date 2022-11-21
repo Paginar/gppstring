@@ -269,4 +269,4 @@ class UspcaSection {
   }
 }
 
-export default UspcaSection;
+export { UspcaSection };

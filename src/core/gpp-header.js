@@ -1,4 +1,4 @@
-import { IntegerFixedLength, RangeFibonacci } from "./core/data-types";
+import { IntegerFixedLength, RangeFibonacci } from "./data-types";
 
 class GPPHeader {
   #type = new IntegerFixedLength.Builder().setLength(6).setValue(3).build();
@@ -25,4 +25,4 @@ class GPPHeader {
   }
 }
 
-export default GPPHeader;
+export { GPPHeader };

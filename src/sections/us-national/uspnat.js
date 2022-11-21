@@ -157,4 +157,4 @@ class UspnatSection {
   }
 }
 
-export default UspnatSection;
+export { UspnatSection };

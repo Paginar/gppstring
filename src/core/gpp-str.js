@@ -1,5 +1,5 @@
-import GPPHeader from "./gpp-header";
-import { encode2BitStr2Base64Websafe } from "../src/core/utils";
+import { GPPHeader } from "./gpp-header";
+import { encode2BitStr2Base64Websafe } from "./utils";
 
 const GPP_TYPE = 3;
 const GPP_VERSION = 1;
@@ -65,4 +65,4 @@ class GPPString {
   }
 }
 
-export default GPPString;
+export { GPPString };
