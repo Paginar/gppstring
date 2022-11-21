@@ -1,4 +1,7 @@
-let { UspcaSection, GPPString } = require("../dist/cjs/index.cjs");
+let {
+  UspcaSection,
+  GPPString,
+} = require("@paginar/gppstring/dist/cjs/index.cjs");
 
 let uspca = new UspcaSection.Builder()
   .setSaleOptOutNotice(0)

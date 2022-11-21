@@ -1,4 +1,4 @@
-import { UspcaSection, GPPString } from "../dist/esm/index.mjs";
+import { UspcaSection, GPPString } from "@paginar/gppstring/dist/esm/index.mjs";
 
 let uspca = new UspcaSection.Builder()
   .setSaleOptOutNotice(0)

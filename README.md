@@ -21,12 +21,44 @@ This library includes support for:
 
 # Getting started
 
-To create a GPP string, you need to create & configure each of the Sections you want to support.
+## Installation
+
+Before we get started, you'll need to install Node and Yarn or npm, and create a directory for your project. Then, install the library using Yarn:
+
+```
+yarn add @paginar/gppstring
+```
+
+Or when using npm run:
+
+```
+npm install @paginar/gppstring
+```
+
+The library can be used in CommonJS & ES6/ESM environments.
+To use the CJS version:
+
+```
+let {
+  UspcaSection,
+  GPPString,
+} = require("@paginar/gppstring/dist/cjs/index.cjs");
+```
+
+To use the ESM version:
+
+```
+import { UspcaSection, GPPString } from "@paginar/gppstring/dist/esm/index.mjs";
+```
+
+## Creating a GPP string
+
+In order to create a GPP string, you first need to create & configure each of the Sections you want to support.
 
 For example if your application needs to support CPRA (for details see the [California's privacy rights act spec](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Sections/US-States/CA/GPP%20Extension:%20IAB%20Privacy%E2%80%99s%20California%20Privacy%20Technical%20Specification.md)) you would build a uspca section object, assigning the appropiate values to each user consent
 
 ```
-import { UspcaSection } from "gppstring"
+import { UspcaSection, GPPString } from "@paginar/gppstring/dist/esm/index.mjs";
 
 let uspca = new UspcaSection.Builder()
   .setSaleOptOutNotice(0)
