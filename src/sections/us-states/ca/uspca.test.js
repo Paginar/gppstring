@@ -50,7 +50,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSaleOptOutNotice Notices = %i, to throw", (value, expected) => {
+])("setSaleOptOutNotice Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder().setSaleOptOutNotice(value).build();
     uspca.encode2BitStr();
@@ -62,7 +62,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSharingOptOutNotice Notices = %i, to throw", (value, expected) => {
+])("setSharingOptOutNotice Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
       .setSharingOptOutNotice(value)
@@ -76,24 +76,21 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])(
-  "setSensitiveDataLimitUseNotice Notices = %i, to throw",
-  (value, expected) => {
-    expect(() => {
-      let uspca = new UspcaSection.Builder()
-        .setSensitiveDataLimitUseNotice(value)
-        .build();
-      uspca.encode2BitStr();
-    }).toThrow();
-  }
-);
+])("setSensitiveDataLimitUseNotice Notices = %i, to throw", (value) => {
+  expect(() => {
+    let uspca = new UspcaSection.Builder()
+      .setSensitiveDataLimitUseNotice(value)
+      .build();
+    uspca.encode2BitStr();
+  }).toThrow();
+});
 
 test.each([
   [4, ""],
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSaleOptOut Notices = %i, to throw", (value, expected) => {
+])("setSaleOptOut Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder().setSaleOptOut(value).build();
     uspca.encode2BitStr();
@@ -105,7 +102,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setSharingOptOut Notices = %i, to throw", (value, expected) => {
+])("setSharingOptOut Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder().setSharingOptOut(value).build();
     uspca.encode2BitStr();
@@ -117,7 +114,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setPersonalDataConsents Notices = %i, to throw", (value, expected) => {
+])("setPersonalDataConsents Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
       .setPersonalDataConsents(value)
@@ -131,7 +128,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaCoveredTransaction Notices = %i, to throw", (value, expected) => {
+])("setMspaCoveredTransaction Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
       .setMspaCoveredTransaction(value)
@@ -145,7 +142,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaOptOutOptionMode Notices = %i, to throw", (value, expected) => {
+])("setMspaOptOutOptionMode Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
       .setMspaOptOutOptionMode(value)
@@ -159,7 +156,7 @@ test.each([
   [null, ""],
   ["", ""],
   [undefined, ""],
-])("setMspaServiceProviderMode Notices = %i, to throw", (value, expected) => {
+])("setMspaServiceProviderMode Notices = %i, to throw", (value) => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
       .setMspaServiceProviderMode(value)
@@ -174,9 +171,17 @@ test.each([
   [2, "0000010000000000101010101010101010000000000000"],
 ])("all setSensitiveDataProcessing Notices = %i", (value, expected) => {
   let uspca = new UspcaSection.Builder()
-    .setSensitiveDataProcessing(
-      new Array(value, value, value, value, value, value, value, value, value)
-    )
+    .setSensitiveDataProcessing([
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+    ])
     .build();
   expect(uspca.encode2BitStr()).toBe(expected);
 });
@@ -184,7 +189,7 @@ test.each([
 test("Calling setSensitiveDataProcessing with wrong array size", () => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
-      .setSensitiveDataProcessing(new Array(0))
+      .setSensitiveDataProcessing([0])
       .build();
     uspca.encode2BitStr();
   }).toThrow();
@@ -193,7 +198,7 @@ test("Calling setSensitiveDataProcessing with wrong array size", () => {
 test("Calling setSensitiveDataProcessing with wrong values", () => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
-      .setSensitiveDataProcessing(new Array(4, 0, 0, 0, 0, 0, 0, 0, 0))
+      .setSensitiveDataProcessing([4, 0, 0, 0, 0, 0, 0, 0, 0])
       .build();
     uspca.encode2BitStr();
   }).toThrow();
@@ -205,7 +210,7 @@ test.each([
   [2, "0000010000000000000000000000000000101000000000"],
 ])("all setKnownChildSensitiveDataConsents Notices = %i", (value, expected) => {
   let uspca = new UspcaSection.Builder()
-    .setKnownChildSensitiveDataConsents(new Array(value, value))
+    .setKnownChildSensitiveDataConsents([value, value])
     .build();
   expect(uspca.encode2BitStr()).toBe(expected);
 });
@@ -222,7 +227,7 @@ test("Calling setKnownChildSensitiveDataConsents with wrong array size", () => {
 test("Calling setKnownChildSensitiveDataConsents with wrong values", () => {
   expect(() => {
     let uspca = new UspcaSection.Builder()
-      .setKnownChildSensitiveDataConsents(new Array(4, 0, 0, 0, 0, 0, 0, 0, 0))
+      .setKnownChildSensitiveDataConsents([4, 0, 0, 0, 0, 0, 0, 0, 0])
       .build();
     uspca.encode2BitStr();
   }).toThrow();
@@ -239,10 +244,18 @@ test.each([
     .setSensitiveDataLimitUseNotice(value)
     .setSaleOptOut(value)
     .setSharingOptOut(value)
-    .setSensitiveDataProcessing(
-      new Array(value, value, value, value, value, value, value, value, value)
-    )
-    .setKnownChildSensitiveDataConsents(new Array(value, value))
+    .setSensitiveDataProcessing([
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+      value,
+    ])
+    .setKnownChildSensitiveDataConsents([value, value])
     .setPersonalDataConsents(value)
     .setMspaCoveredTransaction(value)
     .setMspaOptOutOptionMode(value)

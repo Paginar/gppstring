@@ -1,8 +1,16 @@
 import { IntegerFixedLength, RangeFibonacci } from "./data-types";
 
+const GPP_TYPE = 3;
+const GPP_VERSION = 1;
 class GPPHeader {
-  #type = new IntegerFixedLength.Builder().setLength(6).setValue(3).build();
-  #version = new IntegerFixedLength.Builder().setLength(6).setValue(1).build();
+  #type = new IntegerFixedLength.Builder()
+    .setLength(6)
+    .setValue(GPP_TYPE)
+    .build();
+  #version = new IntegerFixedLength.Builder()
+    .setLength(6)
+    .setValue(GPP_VERSION)
+    .build();
   #sections = null;
 
   constructor(sections) {

@@ -1,9 +1,6 @@
 import { GPPHeader } from "./gpp-header";
 import { encode2BitStr2Base64Websafe } from "./utils";
 
-const GPP_TYPE = 3;
-const GPP_VERSION = 1;
-
 class GPPString {
   #sections = new Map();
 
@@ -33,7 +30,7 @@ class GPPString {
     const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
     encodedString += encodedHeader.encode2BitStr();
 
-    for (const [key, value] of this.#sections) {
+    for (const [, value] of this.#sections) {
       encodedString += "~" + value.encode2BitStr();
     }
     return encodedString;
@@ -48,7 +45,7 @@ class GPPString {
     const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
     encodedString += encode2BitStr2Base64Websafe(encodedHeader.encode2BitStr());
 
-    for (const [key, value] of this.#sections) {
+    for (const [, value] of this.#sections) {
       encodedString += "~" + encode2BitStr2Base64Websafe(value.encode2BitStr());
     }
     return encodedString;

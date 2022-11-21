@@ -84,6 +84,7 @@ In the console you should see the output as a base64-websafe string: `"DBABBa~BA
 # Examples
 
 See the `/examples` folder for CommonJS & ESM examples.
+Also most source files have Jest tests (/src/\*\*/\*.test.js) files which should prove useful.
 
 # Caveats
 
@@ -98,9 +99,7 @@ See the `/examples` folder for CommonJS & ESM examples.
 - Add all other sections
 - Add console logging (with different log levels)
 - Create the localStorage key names (ie IABGPP_8_String)
-- Use Parcel to package to UMD/CJS/ESM
 - Convert to Typescript / add types
-- Publish to npm
 - GPP String decoder function to assist in debugging? (:thumbsdown:)
 
 # Contributors

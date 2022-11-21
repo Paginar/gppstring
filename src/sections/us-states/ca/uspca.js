@@ -164,7 +164,7 @@ class UspcaSection {
 
     setPersonalDataConsents(personalDataConsents) {
       if (personalDataConsents < 0 || personalDataConsents > 2) {
-        throw `param value ${sharingOptOut} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
+        throw `param value ${personalDataConsents} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
       }
       this.#personalDataConsents = new IntegerFixedLength.Builder()
         .setLength(2)
@@ -186,7 +186,7 @@ class UspcaSection {
 
     setMspaOptOutOptionMode(mspaOptOutOptionMode) {
       if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) {
-        throw `param value ${sharingOptOut} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
+        throw `param value ${mspaOptOutOptionMode} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
       }
       this.#mspaOptOutOptionMode = new IntegerFixedLength.Builder()
         .setLength(2)
@@ -197,7 +197,7 @@ class UspcaSection {
 
     setMspaServiceProviderMode(mspaServiceProviderMode) {
       if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) {
-        throw `param value ${sharingOptOut} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
+        throw `param value ${mspaServiceProviderMode} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
       }
       this.#mspaServiceProviderMode = new IntegerFixedLength.Builder()
         .setLength(2)

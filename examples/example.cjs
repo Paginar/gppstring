@@ -1,6 +1,7 @@
 let {
   UspcaSection,
   GPPString,
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require("@paginar/gppstring/dist/cjs/index.cjs");
 
 let uspca = new UspcaSection.Builder()
