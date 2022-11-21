@@ -6,7 +6,7 @@ export function isOverflowed(value, length) {
   return dec2bin(value).length > length;
 }
 
-export function fibonacciEncoding(n) {
+export function int2Fibonacci(n) {
   const fib = new Array(n);
 
   function largestFiboLessOrEqual(num) {
@@ -44,7 +44,7 @@ export function fibonacciEncoding(n) {
   return code;
 }
 
-export function encodeBitStr2Base64Websafe(bitStr) {
+export function encode2BitStr2Base64Websafe(bitStr) {
   let fibcode = bitStr;
   fibcode = padString6bits(fibcode);
   const fibcodeDivided = fibcode.match(/.{1,6}/g);

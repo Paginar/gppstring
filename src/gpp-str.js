@@ -1,5 +1,5 @@
 import GPPHeader from "./gpp-header";
-import { encodeBitStr2Base64Websafe } from "../src/core/utils";
+import { encode2BitStr2Base64Websafe } from "../src/core/utils";
 
 const GPP_TYPE = 3;
 const GPP_VERSION = 1;
@@ -10,8 +10,8 @@ class GPPString {
   static Builder = class {
     #sections = new Map();
 
-    adduspcaSection(uspcaSection) {
-      this.#sections.set(uspcaSection.gppSectionID, uspcaSection);
+    addSection(section) {
+      this.#sections.set(section.gppSectionID, section);
       return this;
     }
 
@@ -34,8 +34,6 @@ class GPPString {
     encodedString += encodedHeader.encode2BitStr();
 
     for (const [key, value] of this.#sections) {
-      // console.log(`${key} = ${value}`);
-      // console.log(`${value.encode2BitStr()}`);
       encodedString += "~" + value.encode2BitStr();
     }
     return encodedString;
@@ -48,12 +46,10 @@ class GPPString {
     }
     const sortedSections = this.#sortSections();
     const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
-    encodedString += encodeBitStr2Base64Websafe(encodedHeader.encode2BitStr());
+    encodedString += encode2BitStr2Base64Websafe(encodedHeader.encode2BitStr());
 
     for (const [key, value] of this.#sections) {
-      // console.log(`${key} = ${value}`);
-      // console.log(`${value.encode2BitStr()}`);
-      encodedString += "~" + encodeBitStr2Base64Websafe(value.encode2BitStr());
+      encodedString += "~" + encode2BitStr2Base64Websafe(value.encode2BitStr());
     }
     return encodedString;
   }

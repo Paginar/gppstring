@@ -1,4 +1,4 @@
-import { dec2bin, isOverflowed, fibonacciEncoding } from "./utils";
+import { dec2bin, isOverflowed, int2Fibonacci } from "./utils";
 
 //
 // Boolean
@@ -136,7 +136,7 @@ class IntegerFibonacci {
   }
 
   encode2BitStr() {
-    return fibonacciEncoding(this.#value);
+    return int2Fibonacci(this.#value);
   }
 }
 
@@ -400,12 +400,12 @@ class RangeFibonacci {
     this.#items.forEach((item, index) => {
       if (item.type === this.#SINGLE) {
         encodedRange += this.#SINGLE;
-        encodedRange += fibonacciEncoding(item.value - lastValue);
+        encodedRange += int2Fibonacci(item.value - lastValue);
         lastValue = item.value;
       } else if (item.type === this.#GROUP) {
         encodedRange += this.#GROUP;
-        encodedRange += fibonacciEncoding(item.fromValue - lastValue);
-        encodedRange += fibonacciEncoding(item.toValue - item.fromValue);
+        encodedRange += int2Fibonacci(item.fromValue - lastValue);
+        encodedRange += int2Fibonacci(item.toValue - item.fromValue);
         lastValue = item.toValue;
       }
     });
