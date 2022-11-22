@@ -1,9 +1,13 @@
 import { IntegerFixedLength, RangeFibonacci } from "./data-types";
+import { encodeBitStr2Base64Websafe } from "./utils";
+import { Section } from "./section";
 
 const GPP_TYPE = 3;
 const GPP_VERSION = 1;
 
-class GPPHeader {
+class GPPHeader implements Section {
+  #gppSectionID = GPP_TYPE;
+  #clientSideAPIPrefix = "gpp-header";
   #type = new IntegerFixedLength.Builder()
     .setLength(6)
     .setValue(GPP_TYPE)
@@ -31,6 +35,17 @@ class GPPHeader {
     encodedString += this.#version.encode2BitStr();
     encodedString += this.#sections.encode2BitStr();
     return encodedString;
+  }
+
+  encode() {
+    return encodeBitStr2Base64Websafe(this.encode2BitStr());
+  }
+  getGPPSectionID() {
+    return this.#gppSectionID;
+  }
+
+  getClientSideAPIPrefix() {
+    return this.#clientSideAPIPrefix;
   }
 }
 

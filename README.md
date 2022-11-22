@@ -7,17 +7,17 @@ This library includes support for:
 | Section ID | Client-side API Prefix | Description                               | Supported |
 | ---------- | ---------------------- | ----------------------------------------- | --------- |
 | 1          | tcfeuv1                | EU TCF v1 section (deprecated)            | N/A       |
-| 2          | tcfeuv2                | EU TCF v2 section (see note below)        | Not yet   |
+| 2          | tcfeuv2                | EU TCF v2 section                         | Not yet   |
 | 3          | GPP                    | Header section (REQUIRED, see note below) | Not yet   |
 | 4          | --                     | GPP signal integrity section              | Not yet   |
 | 5          | tcfca                  | Canadian TCF section                      | Not yet   |
-| 6          | uspv1                  | USPrivacy String (Unencoded Format)       | Not yet   |
-| 7          | usnat                  | US - national section (coming soon)       | Not yet   |
-| 8          | usca                   | US - California section (coming soon)     | Yes       |
-| 9          | usva                   | US - Virginia section (coming soon)       | Not yet   |
-| 10         | usco                   | US - Colorado section (coming soon)       | Not yet   |
-| 11         | usut                   | US - Utah section (coming soon)           | Not yet   |
-| 12         | usct                   | US - Connecticut section (coming soon)    | Not yet   |
+| 6          | uspv1                  | USPrivacy String (Unencoded Format)       | Yes       |
+| 7          | usnat                  | US - national section                     | Not yet   |
+| 8          | usca                   | US - California section                   | Yes       |
+| 9          | usva                   | US - Virginia section                     | Not yet   |
+| 10         | usco                   | US - Colorado section                     | Not yet   |
+| 11         | usut                   | US - Utah section                         | Not yet   |
+| 12         | usct                   | US - Connecticut section                  | Not yet   |
 
 # Getting started
 

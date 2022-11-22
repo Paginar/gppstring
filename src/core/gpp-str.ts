@@ -37,17 +37,17 @@ class GPPString {
     return encodedString;
   }
 
-  encode2Base64Websafe() {
+  encode() {
     let encodedString = "";
     if (this.#sections.size === 0) {
       throw "You need to add sections to be able to build the GPP string";
     }
     const sortedSections = this.#sortSections();
     const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
-    encodedString += encodeBitStr2Base64Websafe(encodedHeader.encode2BitStr());
+    encodedString += encodedHeader.encode();
 
     for (const [, value] of this.#sections) {
-      encodedString += "~" + encodeBitStr2Base64Websafe(value.encode2BitStr());
+      encodedString += "~" + value.encode();
     }
     return encodedString;
   }

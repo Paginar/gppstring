@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { IntegerFixedLength, NBitfield } from "../../../core/data-types";
+import { encodeBitStr2Base64Websafe } from "../../../core//utils";
 import { Section } from "../../../core/section";
-
 class UspcaSection implements Section {
   #gppSectionID = 8;
   #clientSideAPIPrefix = "uspca";
@@ -267,8 +267,11 @@ class UspcaSection implements Section {
     bitStr += this.#mspaCoveredTransaction.encode2BitStr();
     bitStr += this.#mspaOptOutOptionMode.encode2BitStr();
     bitStr += this.#mspaServiceProviderMode.encode2BitStr();
-    // const b64 = Buffer.from(bitStr, "base64url");
     return bitStr;
+  }
+
+  encode(): string {
+    return encodeBitStr2Base64Websafe(this.encode2BitStr());
   }
 
   getGPPSectionID() {

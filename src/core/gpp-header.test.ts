@@ -1,4 +1,3 @@
-//const t = require("./");
 import { GPPHeader } from "./gpp-header";
 
 test("Create an empty gpp header, must throw", () => {

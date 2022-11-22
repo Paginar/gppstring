@@ -20,7 +20,7 @@ export function int2Fibonacci(n: number) {
     return i - 2;
   }
 
-  function fibonacciEncode(number: number) {
+  function fibonacciencode2BitStr(number: number) {
     const index = largestFiboLessOrEqual(number);
     let num = number;
     const codeword = new Array(index + 3);
@@ -40,7 +40,7 @@ export function int2Fibonacci(n: number) {
     // Return pointer to codeword
     return string;
   }
-  const code = fibonacciEncode(n);
+  const code = fibonacciencode2BitStr(n);
   return code;
 }
 

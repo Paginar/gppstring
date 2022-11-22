@@ -1,7 +1,8 @@
 interface Section {
   getGPPSectionID(): number;
-  encode2BitStr(): string;
   getClientSideAPIPrefix(): string;
+  encode(): string;
+  encode2BitStr(): string;
 }
 
 export type { Section };

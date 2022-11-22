@@ -1,5 +1,6 @@
 import { GPPString } from "./gpp-str";
 import { UspcaSection } from "../sections/us-states/ca/uspca";
+import { Uspv1Section, Uspv1Values } from "../sections/us-states/ca/uspv1";
 
 test("Create an empty gpp string, must throw", () => {
   expect(() => {
@@ -8,7 +9,7 @@ test("Create an empty gpp string, must throw", () => {
   }).toThrow();
 });
 
-test("Create a default uspca section", () => {
+test("Create a default uspca section bit string encoded", () => {
   const uspca = new UspcaSection.Builder().build();
   const gppString = new GPPString.Builder().addSection(uspca).build();
   expect(gppString.encode2BitStr()).toBe(
@@ -16,8 +17,56 @@ test("Create a default uspca section", () => {
   );
 });
 
-test("Create a default uspca section", () => {
+test("Create a default uspca section encoded", () => {
   const uspca = new UspcaSection.Builder().build();
   const gppString = new GPPString.Builder().addSection(uspca).build();
-  expect(gppString.encode2Base64Websafe()).toBe("DBABBa~BAAAAAAA");
+  expect(gppString.encode()).toBe("DBABBa~BAAAAAAA");
+});
+
+test("Create a default uspv1 section bit string encoded", () => {
+  const uspv1 = new Uspv1Section.Builder().build();
+  const gppString = new GPPString.Builder().addSection(uspv1).build();
+  expect(gppString.encode2BitStr()).toBe("000011000001000000000001010011~1---");
+});
+
+test("Create a default uspv1 section encoded", () => {
+  const uspv1 = new Uspv1Section.Builder().build();
+  const gppString = new GPPString.Builder().addSection(uspv1).build();
+  expect(gppString.encode()).toBe("DBABT~1---");
+});
+
+test("Create a default uspca & uspv1 section bit string encoded", () => {
+  const uspca = new UspcaSection.Builder().build();
+  const uspv1 = new Uspv1Section.Builder().build();
+  const gppString = new GPPString.Builder()
+    .addSection(uspca)
+    .addSection(uspv1)
+    .build();
+  expect(gppString.encode2BitStr()).toBe(
+    "0000110000010000000000100100110011~0000010000000000000000000000000000000000000000~1---"
+  );
+});
+
+test("Create a default uspca & uspv1 section encoded", () => {
+  const uspca = new UspcaSection.Builder().build();
+  const uspv1 = new Uspv1Section.Builder().build();
+  const gppString = new GPPString.Builder()
+    .addSection(uspca)
+    .addSection(uspv1)
+    .build();
+  expect(gppString.encode()).toBe("DBACTM~BAAAAAAA~1---");
+});
+
+test("Create a uspca (1YNN) & uspv1 section encoded", () => {
+  const uspca = new UspcaSection.Builder().build();
+  const uspv1 = new Uspv1Section.Builder()
+    .setNoticeOptOut(Uspv1Values.YES)
+    .setSaleOptOut(Uspv1Values.NO)
+    .setLspaCoveredTransaction(Uspv1Values.NO)
+    .build();
+  const gppString = new GPPString.Builder()
+    .addSection(uspca)
+    .addSection(uspv1)
+    .build();
+  expect(gppString.encode()).toBe("DBACTM~BAAAAAAA~1YNN");
 });

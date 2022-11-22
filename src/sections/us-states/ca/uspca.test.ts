@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-//const t = require("./");
+
 import { UspcaSection } from "./uspca";
 
 test("Create a default uspca section", () => {
