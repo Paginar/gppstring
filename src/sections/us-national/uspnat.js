@@ -1,9 +1,9 @@
 // // eslint-disable-next-line max-classes-per-file
 // import {
-//   Boolean,
-//   IntegerFixedLength,
-//   RangeFibonacci,
-//   NBitfield,
+//   GPPBoolean,
+//   GPPIntegerFixedLength,
+//   GPPRangeFibonacci,
+//   GPPNBitfield,
 // } from "../../../core/data-types";
 
 // class UspnatSection {

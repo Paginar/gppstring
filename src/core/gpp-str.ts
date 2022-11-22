@@ -1,8 +1,7 @@
-import { GPPHeader } from "./gpp-header";
-import { encodeBitStr2Base64Websafe } from "./utils";
+import { GPPHeaderEncoder } from "./gpp-header";
 import { Section } from "./section";
 
-class GPPString {
+class GPPStringEncoder {
   #sections: Map<number, Section> = new Map();
 
   static Builder = class {
@@ -14,7 +13,7 @@ class GPPString {
     }
 
     build() {
-      return new GPPString(this.#sections);
+      return new GPPStringEncoder(this.#sections);
     }
   };
 
@@ -28,7 +27,9 @@ class GPPString {
       throw "You need to add sections to be able to build the GPP string";
     }
     const sortedSections = this.#sortSections();
-    const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
+    const encodedHeader = new GPPHeaderEncoder(
+      Array.from(sortedSections.keys())
+    );
     encodedString += encodedHeader.encode2BitStr();
 
     for (const [, value] of this.#sections) {
@@ -43,7 +44,9 @@ class GPPString {
       throw "You need to add sections to be able to build the GPP string";
     }
     const sortedSections = this.#sortSections();
-    const encodedHeader = new GPPHeader(Array.from(sortedSections.keys()));
+    const encodedHeader = new GPPHeaderEncoder(
+      Array.from(sortedSections.keys())
+    );
     encodedString += encodedHeader.encode();
 
     for (const [, value] of this.#sections) {
@@ -65,4 +68,4 @@ class GPPString {
   }
 }
 
-export { GPPString };
+export { GPPStringEncoder };

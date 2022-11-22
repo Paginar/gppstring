@@ -1,76 +1,66 @@
 // eslint-disable-next-line max-classes-per-file
-import { IntegerFixedLength, NBitfield } from "../../../core/data-types";
+import { GPPIntegerFixedLength, GPPNBitfield } from "../../../core/data-types";
 import { encodeBitStr2Base64Websafe } from "../../../core//utils";
 import { Section } from "../../../core/section";
-class UspcaSection implements Section {
+class UspcaSectionEncoder implements Section {
   #gppSectionID = 8;
   #clientSideAPIPrefix = "uspca";
-  #version = new IntegerFixedLength.Builder().setLength(6).setValue(1).build();
-  #saleOptOutNotice: IntegerFixedLength;
-  #sharingOptOutNotice: IntegerFixedLength;
-  #sensitiveDataLimitUseNotice: IntegerFixedLength;
-  #saleOptOut: IntegerFixedLength;
-  #sharingOptOut: IntegerFixedLength;
-  #sensitiveDataProcessing: NBitfield;
-  #knownChildSensitiveDataConsents: NBitfield;
-  #personalDataConsents: IntegerFixedLength;
-  #mspaCoveredTransaction: IntegerFixedLength;
-  #mspaOptOutOptionMode: IntegerFixedLength;
-  #mspaServiceProviderMode: IntegerFixedLength;
+  #version = new GPPIntegerFixedLength.Builder()
+    .setLength(6)
+    .setValue(1)
+    .build();
+  #saleOptOutNotice: GPPIntegerFixedLength;
+  #sharingOptOutNotice: GPPIntegerFixedLength;
+  #sensitiveDataLimitUseNotice: GPPIntegerFixedLength;
+  #saleOptOut: GPPIntegerFixedLength;
+  #sharingOptOut: GPPIntegerFixedLength;
+  #sensitiveDataProcessing: GPPNBitfield;
+  #knownChildSensitiveDataConsents: GPPNBitfield;
+  #personalDataConsents: GPPIntegerFixedLength;
+  #mspaCoveredTransaction: GPPIntegerFixedLength;
+  #mspaOptOutOptionMode: GPPIntegerFixedLength;
+  #mspaServiceProviderMode: GPPIntegerFixedLength;
 
   static Builder = class {
-    #saleOptOutNotice = new IntegerFixedLength.Builder()
+    #saleOptOutNotice = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #sharingOptOutNotice = new IntegerFixedLength.Builder()
+    #sharingOptOutNotice = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #sensitiveDataLimitUseNotice = new IntegerFixedLength.Builder()
+    #sensitiveDataLimitUseNotice = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #saleOptOut = new IntegerFixedLength.Builder()
+    #saleOptOut = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #sharingOptOut = new IntegerFixedLength.Builder()
+    #sharingOptOut = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #sensitiveDataProcessing = new NBitfield.Builder()
-      .setNbitSize(2)
-      .setNumBits(9)
-      .setNBit(1, 0)
-      .setNBit(2, 0)
-      .setNBit(3, 0)
-      .setNBit(4, 0)
-      .setNBit(5, 0)
-      .setNBit(6, 0)
-      .setNBit(7, 0)
-      .setNBit(8, 0)
-      .setNBit(9, 0)
+    #sensitiveDataProcessing = new GPPNBitfield.Builder()
+      .setNBits(2, [0, 0, 0, 0, 0, 0, 0, 0, 0])
       .build();
-    #knownChildSensitiveDataConsents = new NBitfield.Builder()
-      .setNbitSize(2)
-      .setNumBits(2)
-      .setNBit(1, 0)
-      .setNBit(2, 0)
+    #knownChildSensitiveDataConsents = new GPPNBitfield.Builder()
+      .setNBits(2, [0, 0])
       .build();
-    #personalDataConsents = new IntegerFixedLength.Builder()
+    #personalDataConsents = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #mspaCoveredTransaction = new IntegerFixedLength.Builder()
+    #mspaCoveredTransaction = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #mspaOptOutOptionMode = new IntegerFixedLength.Builder()
+    #mspaOptOutOptionMode = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
-    #mspaServiceProviderMode = new IntegerFixedLength.Builder()
+    #mspaServiceProviderMode = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0)
       .build();
@@ -79,7 +69,7 @@ class UspcaSection implements Section {
       if (saleOptOutNotice < 0 || saleOptOutNotice > 2) {
         throw `param value ${saleOptOutNotice} of setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
-      this.#saleOptOutNotice = new IntegerFixedLength.Builder()
+      this.#saleOptOutNotice = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(saleOptOutNotice)
         .build();
@@ -90,7 +80,7 @@ class UspcaSection implements Section {
       if (sharingOptOutNotice < 0 || sharingOptOutNotice > 2) {
         throw `param value ${sharingOptOutNotice} of setSharingOptOutNotice method must be a non-negative integer between 0 and 2`;
       }
-      this.#sharingOptOutNotice = new IntegerFixedLength.Builder()
+      this.#sharingOptOutNotice = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(sharingOptOutNotice)
         .build();
@@ -101,7 +91,7 @@ class UspcaSection implements Section {
       if (sensitiveDataLimitUseNotice < 0 || sensitiveDataLimitUseNotice > 2) {
         throw `param value ${sensitiveDataLimitUseNotice} of setSensitiveDataLimitUseNotice method must be a non-negative integer between 0 and 2`;
       }
-      this.#sensitiveDataLimitUseNotice = new IntegerFixedLength.Builder()
+      this.#sensitiveDataLimitUseNotice = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(sensitiveDataLimitUseNotice)
         .build();
@@ -112,7 +102,7 @@ class UspcaSection implements Section {
       if (saleOptOut < 0 || saleOptOut > 2) {
         throw `param value ${saleOptOut} of setSaleOptOut method must be a non-negative integer between 0 and 2`;
       }
-      this.#saleOptOut = new IntegerFixedLength.Builder()
+      this.#saleOptOut = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(saleOptOut)
         .build();
@@ -123,32 +113,28 @@ class UspcaSection implements Section {
       if (sharingOptOut < 0 || sharingOptOut > 2) {
         throw `param value ${sharingOptOut} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
       }
-      this.#sharingOptOut = new IntegerFixedLength.Builder()
+      this.#sharingOptOut = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(sharingOptOut)
         .build();
       return this;
     }
 
-    setSensitiveDataProcessing(sensitiveDataProcessing: number) {
+    setSensitiveDataProcessing(sensitiveDataProcessing: number[]) {
       if (
         !Array.isArray(sensitiveDataProcessing) ||
         sensitiveDataProcessing.length !== 9
       ) {
         throw `param in setSensitiveDataProcessing method must be an Array of length 9`;
       }
-      const nbitfield = new NBitfield.Builder().setNbitSize(2).setNumBits(9);
-
-      for (let n = 0; n < 9; n++) {
-        const bitValue = sensitiveDataProcessing[n];
-        nbitfield.setNBit(n + 1, bitValue);
-      }
-      this.#sensitiveDataProcessing = nbitfield.build();
+      this.#sensitiveDataProcessing = new GPPNBitfield.Builder()
+        .setNBits(2, sensitiveDataProcessing)
+        .build();
       return this;
     }
 
     setKnownChildSensitiveDataConsents(
-      knownChildSensitiveDataConsents: number
+      knownChildSensitiveDataConsents: number[]
     ) {
       if (
         !Array.isArray(knownChildSensitiveDataConsents) ||
@@ -156,12 +142,9 @@ class UspcaSection implements Section {
       ) {
         throw `param value ${knownChildSensitiveDataConsents} of section in setKnownChildSensitiveDataConsents method must be an Array of length 2`;
       }
-      const nbitfield = new NBitfield.Builder().setNbitSize(2).setNumBits(2);
-      for (let n = 0; n < 2; n++) {
-        const bitValue = knownChildSensitiveDataConsents[n];
-        nbitfield.setNBit(n + 1, bitValue);
-      }
-      this.#knownChildSensitiveDataConsents = nbitfield.build();
+      this.#knownChildSensitiveDataConsents = new GPPNBitfield.Builder()
+        .setNBits(2, knownChildSensitiveDataConsents)
+        .build();
       return this;
     }
 
@@ -169,7 +152,7 @@ class UspcaSection implements Section {
       if (personalDataConsents < 0 || personalDataConsents > 2) {
         throw `param value ${personalDataConsents} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
       }
-      this.#personalDataConsents = new IntegerFixedLength.Builder()
+      this.#personalDataConsents = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(personalDataConsents)
         .build();
@@ -180,7 +163,7 @@ class UspcaSection implements Section {
       if (mspaCoveredTransaction < 0 || mspaCoveredTransaction > 2) {
         throw `param value ${mspaCoveredTransaction} of setMspaCoveredTransaction method must be a non-negative integer between 0 and 2`;
       }
-      this.#mspaCoveredTransaction = new IntegerFixedLength.Builder()
+      this.#mspaCoveredTransaction = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(mspaCoveredTransaction)
         .build();
@@ -191,7 +174,7 @@ class UspcaSection implements Section {
       if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) {
         throw `param value ${mspaOptOutOptionMode} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
       }
-      this.#mspaOptOutOptionMode = new IntegerFixedLength.Builder()
+      this.#mspaOptOutOptionMode = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(mspaOptOutOptionMode)
         .build();
@@ -202,7 +185,7 @@ class UspcaSection implements Section {
       if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) {
         throw `param value ${mspaServiceProviderMode} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
       }
-      this.#mspaServiceProviderMode = new IntegerFixedLength.Builder()
+      this.#mspaServiceProviderMode = new GPPIntegerFixedLength.Builder()
         .setLength(2)
         .setValue(mspaServiceProviderMode)
         .build();
@@ -210,7 +193,7 @@ class UspcaSection implements Section {
     }
 
     build() {
-      const gppString = new UspcaSection(
+      const gppString = new UspcaSectionEncoder(
         this.#saleOptOutNotice,
         this.#sharingOptOutNotice,
         this.#sensitiveDataLimitUseNotice,
@@ -228,17 +211,17 @@ class UspcaSection implements Section {
   };
 
   constructor(
-    saleOptOutNotice: IntegerFixedLength,
-    sharingOptOutNotice: IntegerFixedLength,
-    sensitiveDataLimitUseNotice: IntegerFixedLength,
-    saleOptOut: IntegerFixedLength,
-    sharingOptOut: IntegerFixedLength,
-    sensitiveDataProcessing: NBitfield,
-    knownChildSensitiveDataConsents: NBitfield,
-    personalDataConsents: IntegerFixedLength,
-    mspaCoveredTransaction: IntegerFixedLength,
-    mspaOptOutOptionMode: IntegerFixedLength,
-    mspaServiceProviderMode: IntegerFixedLength
+    saleOptOutNotice: GPPIntegerFixedLength,
+    sharingOptOutNotice: GPPIntegerFixedLength,
+    sensitiveDataLimitUseNotice: GPPIntegerFixedLength,
+    saleOptOut: GPPIntegerFixedLength,
+    sharingOptOut: GPPIntegerFixedLength,
+    sensitiveDataProcessing: GPPNBitfield,
+    knownChildSensitiveDataConsents: GPPNBitfield,
+    personalDataConsents: GPPIntegerFixedLength,
+    mspaCoveredTransaction: GPPIntegerFixedLength,
+    mspaOptOutOptionMode: GPPIntegerFixedLength,
+    mspaServiceProviderMode: GPPIntegerFixedLength
   ) {
     this.#saleOptOutNotice = saleOptOutNotice;
     this.#sharingOptOutNotice = sharingOptOutNotice;
@@ -283,4 +266,4 @@ class UspcaSection implements Section {
   }
 }
 
-export { UspcaSection };
+export { UspcaSectionEncoder };

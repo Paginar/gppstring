@@ -4,27 +4,27 @@ import { int2BinStr, isOverflowed, int2Fibonacci } from "./utils";
 // Global
 //
 
-enum RangeItemType {
+enum GPPRangeItemType {
   SINGLE = "0",
   GROUP = "1",
 }
 
-interface RangeItemSingle {
-  type: RangeItemType.SINGLE;
+interface GPPRangeItemSingle {
+  type: GPPRangeItemType.SINGLE;
   value: number;
 }
 
-interface RangeItemGroup {
-  type: RangeItemType.GROUP;
+interface GPPRangeItemGroup {
+  type: GPPRangeItemType.GROUP;
   fromValue: number;
   toValue: number;
 }
 
 //
-// Boolean
+// GPPBoolean
 //
 
-class Boolean {
+class GPPBoolean {
   #value = false;
 
   static Builder = class {
@@ -36,8 +36,7 @@ class Boolean {
     }
 
     build() {
-      const boolean = new Boolean(this.#value);
-      return boolean;
+      return new GPPBoolean(this.#value);
     }
   };
 
@@ -58,10 +57,10 @@ class Boolean {
 }
 
 //
-// IntegerFixedLength
+// GPPIntegerFixedLength
 //
 
-class IntegerFixedLength {
+class GPPIntegerFixedLength {
   #value: number;
   #length: number;
 
@@ -88,7 +87,7 @@ class IntegerFixedLength {
     }
 
     build() {
-      const integer = new IntegerFixedLength(this.#value, this.#length);
+      const integer = new GPPIntegerFixedLength(this.#value, this.#length);
       return integer;
     }
 
@@ -119,13 +118,13 @@ class IntegerFixedLength {
 }
 
 //
-// IntegerFibonacci
+// GPPIntegerFibonacci
 //
 // Integer encoded using Fibonacci encoding
 // See “About Fibonacci Encoding” for more detail
 // https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md#fibonacci-encoding-to-deal-with-string-length-
 
-class IntegerFibonacci {
+class GPPIntegerFibonacci {
   #value = 0;
 
   static Builder = class {
@@ -140,7 +139,7 @@ class IntegerFibonacci {
     }
 
     build() {
-      const integer = new IntegerFibonacci(this.#value);
+      const integer = new GPPIntegerFibonacci(this.#value);
       return integer;
     }
   };
@@ -161,12 +160,12 @@ class IntegerFibonacci {
 }
 
 //
-// StringFixedLength
+// GPPStringFixedLength
 //
 // A fixed amount of bit representing a string. The character’s ASCII integer ID is subtracted by 65 and encoded into an int(6).
 // Example: int(6) “101010” represents integer 47 + 65 = char “h”
 
-class StringFixedLength {
+class GPPStringFixedLength {
   #value = "";
 
   static Builder = class {
@@ -178,7 +177,7 @@ class StringFixedLength {
     }
 
     build() {
-      return new StringFixedLength(this.#value);
+      return new GPPStringFixedLength(this.#value);
     }
   };
 
@@ -196,7 +195,7 @@ class StringFixedLength {
     let encodedString = "";
     let int6;
     for (const char of this.#value) {
-      int6 = new IntegerFixedLength.Builder()
+      int6 = new GPPIntegerFixedLength.Builder()
         .setLength(6)
         .setValue(char.charCodeAt(0) - 65)
         .build();
@@ -207,12 +206,12 @@ class StringFixedLength {
 }
 
 //
-// Datetime
+// GPPDatetime
 //
 // A datetime is encoded as a 36 bit integer representing the 1/10th seconds since January 01 1970 00:00:00 UTC.
 // Example JavaScript representation: Math.round((new Date()).getTime()/100)
 
-class Datetime {
+class GPPDatetime {
   #value = new Date();
 
   static Builder = class {
@@ -227,7 +226,7 @@ class Datetime {
     }
 
     build() {
-      return new Datetime(this.#value);
+      return new GPPDatetime(this.#value);
     }
   };
 
@@ -242,7 +241,7 @@ class Datetime {
   }
 
   encode2BitStr() {
-    const int36 = new IntegerFixedLength.Builder()
+    const int36 = new GPPIntegerFixedLength.Builder()
       .setLength(36)
       .setValue(Math.round(this.#value.getTime() / 100))
       .build();
@@ -251,19 +250,15 @@ class Datetime {
 }
 
 //
-// RangeInteger
+// GPPRangeInteger
 //
 
-class RangeInteger {
-  #items: (RangeItemSingle | RangeItemGroup)[] = [];
-  #SINGLE = "0";
-  #GROUP = "1";
+class GPPRangeInteger {
+  #items: (GPPRangeItemSingle | GPPRangeItemGroup)[] = [];
 
   static Builder = class {
-    #items: (RangeItemSingle | RangeItemGroup)[] = [];
+    #items: (GPPRangeItemSingle | GPPRangeItemGroup)[] = [];
     #lastValue = 0;
-    #SINGLE = "0";
-    #GROUP = "1";
 
     addSingle(value: number) {
       if (!Number.isInteger(value)) {
@@ -274,7 +269,7 @@ class RangeInteger {
       }
 
       this.#items.push({
-        type: RangeItemType.SINGLE,
+        type: GPPRangeItemType.SINGLE,
         value: value,
       });
       this.#lastValue = value;
@@ -294,17 +289,17 @@ class RangeInteger {
       if (fromValue <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: RangeItemType.GROUP, fromValue, toValue });
+      this.#items.push({ type: GPPRangeItemType.GROUP, fromValue, toValue });
       this.#lastValue = toValue;
       return this;
     }
 
     build() {
-      return new RangeInteger(this.#items);
+      return new GPPRangeInteger(this.#items);
     }
   };
 
-  constructor(items: (RangeItemSingle | RangeItemGroup)[]) {
+  constructor(items: (GPPRangeItemSingle | GPPRangeItemGroup)[]) {
     this.#items = items;
   }
 
@@ -316,30 +311,30 @@ class RangeInteger {
 
   encode2BitStr() {
     let encodedRange = "";
-    encodedRange += new IntegerFixedLength.Builder()
+    encodedRange += new GPPIntegerFixedLength.Builder()
       .setLength(12)
       .setValue(this.#items.length)
       .build()
       .encode2BitStr();
     let lastValue = 0;
     this.#items.forEach((item) => {
-      if (item.type === RangeItemType.SINGLE) {
-        encodedRange += this.#SINGLE;
-        encodedRange += new IntegerFixedLength.Builder()
+      if (item.type === GPPRangeItemType.SINGLE) {
+        encodedRange += GPPRangeItemType.SINGLE;
+        encodedRange += new GPPIntegerFixedLength.Builder()
           .setLength(16)
           .setValue(item.value - lastValue)
           .build()
           .encode2BitStr();
 
         lastValue = item.value;
-      } else if (item.type === RangeItemType.GROUP) {
-        encodedRange += this.#GROUP;
-        encodedRange += new IntegerFixedLength.Builder()
+      } else if (item.type === GPPRangeItemType.GROUP) {
+        encodedRange += GPPRangeItemType.GROUP;
+        encodedRange += new GPPIntegerFixedLength.Builder()
           .setLength(16)
           .setValue(item.fromValue - lastValue)
           .build()
           .encode2BitStr();
-        encodedRange += new IntegerFixedLength.Builder()
+        encodedRange += new GPPIntegerFixedLength.Builder()
           .setLength(16)
           .setValue(item.toValue - item.fromValue)
           .build()
@@ -352,14 +347,14 @@ class RangeInteger {
 }
 
 //
-// RangeFibonacci
+// GPPRangeFibonacci
 //
 
-class RangeFibonacci {
-  #items: (RangeItemGroup | RangeItemSingle)[] = [];
+class GPPRangeFibonacci {
+  #items: (GPPRangeItemGroup | GPPRangeItemSingle)[] = [];
 
   static Builder = class {
-    #items: (RangeItemGroup | RangeItemSingle)[] = [];
+    #items: (GPPRangeItemGroup | GPPRangeItemSingle)[] = [];
     #lastValue = 0;
 
     addSingle(value: number) {
@@ -369,7 +364,7 @@ class RangeFibonacci {
       if (value <= this.#lastValue) {
         throw "Values must be added in sorted ascending order";
       }
-      this.#items.push({ type: RangeItemType.SINGLE, value: value });
+      this.#items.push({ type: GPPRangeItemType.SINGLE, value: value });
       this.#lastValue = value;
       return this;
     }
@@ -388,7 +383,7 @@ class RangeFibonacci {
         throw "Values must be added in sorted ascending order";
       }
       this.#items.push({
-        type: RangeItemType.GROUP,
+        type: GPPRangeItemType.GROUP,
         fromValue,
         toValue,
       });
@@ -397,12 +392,12 @@ class RangeFibonacci {
     }
 
     build() {
-      const rangeFibonacci = new RangeFibonacci(this.#items);
+      const rangeFibonacci = new GPPRangeFibonacci(this.#items);
       return rangeFibonacci;
     }
   };
 
-  constructor(items: (RangeItemGroup | RangeItemSingle)[]) {
+  constructor(items: (GPPRangeItemGroup | GPPRangeItemSingle)[]) {
     this.#items = items;
   }
 
@@ -414,7 +409,7 @@ class RangeFibonacci {
 
   encode2BitStr() {
     let encodedRange = "";
-    encodedRange += new IntegerFixedLength.Builder()
+    encodedRange += new GPPIntegerFixedLength.Builder()
       .setLength(12)
       .setValue(this.#items.length)
       .build()
@@ -422,11 +417,11 @@ class RangeFibonacci {
 
     let lastValue = 0;
     this.#items.forEach((item) => {
-      if (item.type === RangeItemType.SINGLE) {
+      if (item.type === GPPRangeItemType.SINGLE) {
         encodedRange += item.type;
         encodedRange += int2Fibonacci(item.value - lastValue);
         lastValue = item.value;
-      } else if (item.type === RangeItemType.GROUP) {
+      } else if (item.type === GPPRangeItemType.GROUP) {
         encodedRange += item.type;
         encodedRange += int2Fibonacci(item.fromValue - lastValue);
         encodedRange += int2Fibonacci(item.toValue - item.fromValue);
@@ -438,73 +433,43 @@ class RangeFibonacci {
 }
 
 //
-// NBitField
+// GPPNBitfield
 //
 
-class NBitfield {
-  #nBits: IntegerFixedLength[] = [];
-  #nBitSize = 1;
+class GPPNBitfield {
+  #nBits: GPPIntegerFixedLength[] = [];
 
   static Builder = class {
-    #nBits: IntegerFixedLength[] = [];
-    #nBitSize = 1;
-    #numBits = 0;
+    #nBits: GPPIntegerFixedLength[] = [];
 
-    setNbitSize(nBitSize: number) {
+    setNBits(nBitSize: number, nBitValues: number[]) {
       if (!Number.isInteger(nBitSize) && nBitSize > 0) {
         throw "nBitSize param must be a positive integer";
       }
-      this.#nBitSize = nBitSize;
-      return this;
-    }
 
-    setNumBits(numBits: number) {
-      if (!Number.isInteger(numBits) && numBits > 0) {
-        throw "numBits param must be a positive integer";
+      for (let i = 0; i < nBitValues.length; i++) {
+        this.#nBits.push(
+          new GPPIntegerFixedLength.Builder()
+            .setLength(nBitSize)
+            .setValue(nBitValues[i])
+            .build()
+        );
       }
-      this.#numBits = numBits;
-      for (let i = 0; i < numBits; i++) {
-        const integerFixedLength = new IntegerFixedLength.Builder()
-          .setLength(this.#nBitSize)
-          .setValue(0)
-          .build();
-        this.#nBits.push(integerFixedLength);
-      }
-      return this;
-    }
-
-    setNBit(position: number, value: number) {
-      if (
-        !Number.isInteger(position) &&
-        position >= 1 &&
-        position <= this.#numBits
-      ) {
-        throw `position param must be a positive integer, from 1 to ${
-          this.#numBits
-        }`;
-      }
-      const integerFixedLength = new IntegerFixedLength.Builder()
-        .setLength(this.#nBitSize)
-        .setValue(value)
-        .build();
-      this.#nBits[position - 1] = integerFixedLength;
       return this;
     }
 
     build() {
-      const nBitfield = new NBitfield(this.#nBitSize, this.#nBits);
+      const nBitfield = new GPPNBitfield(this.#nBits);
       return nBitfield;
     }
   };
 
-  constructor(nBitSize: number, nBits: IntegerFixedLength[]) {
-    this.#nBitSize = nBitSize;
+  constructor(nBits: GPPIntegerFixedLength[]) {
     this.#nBits = nBits;
   }
 
   toString() {
     return JSON.stringify({
-      nBitSize: this.#nBitSize,
       nBits: this.#nBits,
     });
   }
@@ -517,13 +482,97 @@ class NBitfield {
     return encodedRange;
   }
 }
+
+//
+// OptimizedIntRange
+//
+
+class GPPOptimizedIntRange {
+  #numItems = 0;
+  #isRangeEncoding: boolean | null = null;
+  #RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null = null;
+
+  static Builder = class {
+    #numItems = 0;
+    #isRangeEncoding: boolean | null = null;
+    #RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null = null;
+
+    setBitfieldData(nBitValues: number[]) {
+      this.#numItems = nBitValues.length;
+      this.#isRangeEncoding = false;
+      this.#RangeOrBitfieldData = new GPPNBitfield.Builder()
+        .setNBits(1, nBitValues)
+        .build();
+      return this;
+    }
+
+    setRangeData(from: number, to: number) {
+      this.#numItems = to;
+      this.#isRangeEncoding = true;
+      this.#RangeOrBitfieldData = new GPPRangeInteger.Builder()
+        .addGroup(from, to)
+        .build();
+      return this;
+    }
+
+    build() {
+      const nBitfield = new GPPOptimizedIntRange(
+        this.#numItems,
+        this.#isRangeEncoding,
+        this.#RangeOrBitfieldData
+      );
+      return nBitfield;
+    }
+  };
+
+  constructor(
+    numItems: number,
+    isRangeEncoding: boolean | null,
+    RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null
+  ) {
+    this.#numItems = numItems;
+    this.#isRangeEncoding = isRangeEncoding;
+    this.#RangeOrBitfieldData = RangeOrBitfieldData;
+  }
+
+  toString() {
+    return JSON.stringify({
+      numItems: this.#numItems,
+      isRangeEncoding: this.#isRangeEncoding,
+      RangeOrBitfieldData: this.#RangeOrBitfieldData,
+    });
+  }
+
+  encode2BitStr() {
+    let encodedRange = "";
+    if (
+      this.#numItems > 0 &&
+      this.#isRangeEncoding !== null &&
+      this.#RangeOrBitfieldData !== null
+    ) {
+      encodedRange += new GPPIntegerFixedLength.Builder()
+        .setLength(16)
+        .setValue(this.#numItems)
+        .build()
+        .encode2BitStr();
+      encodedRange += new GPPBoolean.Builder()
+        .setValue(this.#isRangeEncoding)
+        .build()
+        .encode2BitStr();
+      encodedRange += this.#RangeOrBitfieldData.encode2BitStr();
+    }
+    return encodedRange;
+  }
+}
+
 export {
-  Boolean,
-  IntegerFixedLength,
-  IntegerFibonacci,
-  StringFixedLength,
-  Datetime,
-  RangeInteger,
-  RangeFibonacci,
-  NBitfield,
+  GPPBoolean,
+  GPPIntegerFixedLength,
+  GPPIntegerFibonacci,
+  GPPStringFixedLength,
+  GPPDatetime,
+  GPPRangeInteger,
+  GPPRangeFibonacci,
+  GPPNBitfield,
+  GPPOptimizedIntRange,
 };

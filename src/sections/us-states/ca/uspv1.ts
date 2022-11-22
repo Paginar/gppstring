@@ -6,7 +6,7 @@ export enum Uspv1Values {
   NO = "N",
 }
 
-export class Uspv1Section implements Section {
+export class Uspv1SectionEncoder implements Section {
   #gppSectionID = 6;
   #clientSideAPIPrefix = "uspv1";
   #version = 1;
@@ -44,7 +44,7 @@ export class Uspv1Section implements Section {
     }
 
     build() {
-      const gppString = new Uspv1Section(
+      const gppString = new Uspv1SectionEncoder(
         this.#noticeOptOut,
         this.#saleOptOut,
         this.#lspaCoveredTransaction
