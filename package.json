@@ -9,10 +9,15 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll",
+    "test:once": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint",
     "prebuild": "rm -rf lib",
     "typecheck": "tsc --noEmit --w",
-    "build": "parcel build"
+    "typecheck:once": "tsc --noEmit",
+    "build": "parcel build",
+    "preversion": "npm run lint && npm run typecheck:once && npm run test:once",
+    "version": "npm run build && git add .",
+    "postversion": "git push && git push --tags"
   },
   "license": "MIT",
   "devDependencies": {
