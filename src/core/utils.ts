@@ -45,25 +45,30 @@ export function int2Fibonacci(n: number) {
 }
 
 export function encodeBitStr2Base64Websafe(bitStr: string) {
-  let fibcode = bitStr;
-  fibcode = padString6bits(fibcode);
-  const fibcodeDivided = fibcode.match(/.{1,6}/g);
-  return fibcodeDivided
-    ? fibcodeDivided
-        .map((str) => {
-          // console.log(parseInt(str, 2) + 65);
-          return String.fromCharCode(parseInt(str, 2) + 65);
-        })
-        .join("")
-    : "";
+  // See https://en.wikipedia.org/wiki/Base64
+  const base64Alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const chars = bitStr.match(/.{1,6}/g) || [];
+  let encodedString = "";
+  for (let char of chars) {
+    if (char.length < 6) {
+      char = padString6bits(char);
+    }
+    const charPos = parseInt(char, 2);
+    const charValue = base64Alphabet[charPos];
+    encodedString += charValue;
+  }
+  return webSafe64(encodedString);
 }
 
 function padString6bits(string: string) {
   const mod: number = string.length % 6;
-  // We don't require any padding
   if (!mod) return string;
-  // See how much padding we need
   const rem = 6 - mod;
   const pad = "".padEnd(rem, "0");
   return string + pad;
+}
+
+function webSafe64(base64: string) {
+  return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }

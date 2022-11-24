@@ -23,5 +23,5 @@ test("Encode to base64-websafe 000011 000001 000000 000010 001101 011", () => {
 test("Encode to base64-websafe 000011 000001 000000 000001 100011 11", () => {
   expect(
     encodeBitStr2Base64Websafe("000011000001000000000001100011110000")
-  ).toBe("DBABdq");
+  ).toBe("DBABjw");
 });

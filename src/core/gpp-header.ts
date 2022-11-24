@@ -16,17 +16,28 @@ class GPPHeaderEncoder implements Section {
     .setLength(6)
     .setValue(GPP_VERSION)
     .build();
-  #sections;
+  #sections: GPPRangeFibonacci;
 
-  constructor(sectionsIDArray: number[]) {
-    if (!Array.isArray(sectionsIDArray) || sectionsIDArray.length === 0) {
-      throw `sections must be an Array sections IDs of length > 0, for example: [2, 6]`;
+  static Builder = class {
+    #sectionsBuilder = new GPPRangeFibonacci.Builder();
+
+    addSingleSection(value: number) {
+      this.#sectionsBuilder.addSingle(value);
+      return this;
     }
-    const rangeFibonacci = new GPPRangeFibonacci.Builder();
-    for (let n = 0; n < sectionsIDArray.length; n++) {
-      rangeFibonacci.addSingle(sectionsIDArray[n]);
+
+    addRangeSection(fromValue: number, toValue: number) {
+      this.#sectionsBuilder.addGroup(fromValue, toValue);
+      return this;
     }
-    this.#sections = rangeFibonacci.build();
+
+    build() {
+      return new GPPHeaderEncoder(this.#sectionsBuilder.build());
+    }
+  };
+
+  constructor(sections: GPPRangeFibonacci) {
+    this.#sections = sections;
   }
 
   encode2BitStr() {
