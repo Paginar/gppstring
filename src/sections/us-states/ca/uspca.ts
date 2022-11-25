@@ -2,6 +2,7 @@
 import { GPPIntegerFixedLength, GPPNBitfield } from "../../../core/data-types";
 import { encodeBitStr2Base64Websafe } from "../../../core//utils";
 import { Section } from "../../../core/section";
+
 class UspcaSectionEncoder implements Section {
   #gppSectionID = 8;
   #clientSideAPIPrefix = "uspca";
@@ -22,189 +23,137 @@ class UspcaSectionEncoder implements Section {
   #mspaServiceProviderMode: GPPIntegerFixedLength;
 
   static Builder = class {
-    #saleOptOutNotice = new GPPIntegerFixedLength.Builder()
+    #saleOptOutNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #sharingOptOutNotice = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #sharingOptOutNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #sensitiveDataLimitUseNotice = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #sensitiveDataLimitUseNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #saleOptOut = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #saleOptOutBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #sharingOptOut = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #sharingOptOutBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #sensitiveDataProcessing = new GPPNBitfield.Builder()
-      .setNBits(2, [0, 0, 0, 0, 0, 0, 0, 0, 0])
-      .build();
-    #knownChildSensitiveDataConsents = new GPPNBitfield.Builder()
-      .setNBits(2, [0, 0])
-      .build();
-    #personalDataConsents = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #sensitiveDataProcessingBuilder = new GPPNBitfield.Builder()
+      .setLength(9)
+      .setBitSize(2)
+      .setValues(Array(9).fill(0));
+
+    #knownChildSensitiveDataConsentsBuilder = new GPPNBitfield.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #mspaCoveredTransaction = new GPPIntegerFixedLength.Builder()
+      .setBitSize(2)
+      .setValues(Array(2).fill(0));
+
+    #personalDataConsentsBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #mspaOptOutOptionMode = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #mspaCoveredTransactionBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
-    #mspaServiceProviderMode = new GPPIntegerFixedLength.Builder()
+      .setValue(0);
+
+    #mspaOptOutOptionModeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
-      .setValue(0)
-      .build();
+      .setValue(0);
 
-    setSaleOptOutNotice(saleOptOutNotice: number) {
-      if (saleOptOutNotice < 0 || saleOptOutNotice > 2) {
-        throw `param value ${saleOptOutNotice} of setSaleOptOutNotice method must be a non-negative integer between 0 and 2`;
-      }
-      this.#saleOptOutNotice = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(saleOptOutNotice)
-        .build();
+    #mspaServiceProviderModeBuilder = new GPPIntegerFixedLength.Builder()
+      .setLength(2)
+      .setValue(0);
+
+    setSaleOptOutNotice(value: number) {
+      this.#validateValue(value);
+      this.#saleOptOutNoticeBuilder.setValue(value);
       return this;
     }
 
-    setSharingOptOutNotice(sharingOptOutNotice: number) {
-      if (sharingOptOutNotice < 0 || sharingOptOutNotice > 2) {
-        throw `param value ${sharingOptOutNotice} of setSharingOptOutNotice method must be a non-negative integer between 0 and 2`;
-      }
-      this.#sharingOptOutNotice = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(sharingOptOutNotice)
-        .build();
+    setSharingOptOutNotice(value: number) {
+      this.#validateValue(value);
+      this.#sharingOptOutNoticeBuilder.setValue(value);
       return this;
     }
 
-    setSensitiveDataLimitUseNotice(sensitiveDataLimitUseNotice: number) {
-      if (sensitiveDataLimitUseNotice < 0 || sensitiveDataLimitUseNotice > 2) {
-        throw `param value ${sensitiveDataLimitUseNotice} of setSensitiveDataLimitUseNotice method must be a non-negative integer between 0 and 2`;
-      }
-      this.#sensitiveDataLimitUseNotice = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(sensitiveDataLimitUseNotice)
-        .build();
+    setSensitiveDataLimitUseNotice(value: number) {
+      this.#validateValue(value);
+      this.#sensitiveDataLimitUseNoticeBuilder.setValue(value);
       return this;
     }
 
-    setSaleOptOut(saleOptOut: number) {
-      if (saleOptOut < 0 || saleOptOut > 2) {
-        throw `param value ${saleOptOut} of setSaleOptOut method must be a non-negative integer between 0 and 2`;
-      }
-      this.#saleOptOut = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(saleOptOut)
-        .build();
+    setSaleOptOut(value: number) {
+      this.#validateValue(value);
+      this.#saleOptOutBuilder.setValue(value);
       return this;
     }
 
-    setSharingOptOut(sharingOptOut: number) {
-      if (sharingOptOut < 0 || sharingOptOut > 2) {
-        throw `param value ${sharingOptOut} of setSharingOptOut method must be a non-negative integer between 0 and 2`;
-      }
-      this.#sharingOptOut = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(sharingOptOut)
-        .build();
+    setSharingOptOut(value: number) {
+      this.#validateValue(value);
+      this.#sharingOptOutBuilder.setValue(value);
       return this;
     }
 
-    setSensitiveDataProcessing(sensitiveDataProcessing: number[]) {
-      if (
-        !Array.isArray(sensitiveDataProcessing) ||
-        sensitiveDataProcessing.length !== 9
-      ) {
-        throw `param in setSensitiveDataProcessing method must be an Array of length 9`;
-      }
-      this.#sensitiveDataProcessing = new GPPNBitfield.Builder()
-        .setNBits(2, sensitiveDataProcessing)
-        .build();
+    setSensitiveDataProcessing(values: number[]) {
+      this.#sensitiveDataProcessingBuilder.setValues(values);
       return this;
     }
 
-    setKnownChildSensitiveDataConsents(
-      knownChildSensitiveDataConsents: number[]
-    ) {
-      if (
-        !Array.isArray(knownChildSensitiveDataConsents) ||
-        knownChildSensitiveDataConsents.length !== 2
-      ) {
-        throw `param value ${knownChildSensitiveDataConsents} of section in setKnownChildSensitiveDataConsents method must be an Array of length 2`;
-      }
-      this.#knownChildSensitiveDataConsents = new GPPNBitfield.Builder()
-        .setNBits(2, knownChildSensitiveDataConsents)
-        .build();
+    setKnownChildSensitiveDataConsents(values: number[]) {
+      this.#knownChildSensitiveDataConsentsBuilder.setValues(values);
       return this;
     }
 
-    setPersonalDataConsents(personalDataConsents: number) {
-      if (personalDataConsents < 0 || personalDataConsents > 2) {
-        throw `param value ${personalDataConsents} of setPersonalDataConsents method must be a non-negative integer between 0 and 2`;
-      }
-      this.#personalDataConsents = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(personalDataConsents)
-        .build();
+    setPersonalDataConsents(value: number) {
+      this.#validateValue(value);
+      this.#personalDataConsentsBuilder.setValue(value);
       return this;
     }
 
-    setMspaCoveredTransaction(mspaCoveredTransaction: number) {
-      if (mspaCoveredTransaction < 0 || mspaCoveredTransaction > 2) {
-        throw `param value ${mspaCoveredTransaction} of setMspaCoveredTransaction method must be a non-negative integer between 0 and 2`;
-      }
-      this.#mspaCoveredTransaction = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(mspaCoveredTransaction)
-        .build();
+    setMspaCoveredTransaction(value: number) {
+      this.#validateValue(value);
+      this.#mspaCoveredTransactionBuilder.setValue(value);
       return this;
     }
 
-    setMspaOptOutOptionMode(mspaOptOutOptionMode: number) {
-      if (mspaOptOutOptionMode < 0 || mspaOptOutOptionMode > 2) {
-        throw `param value ${mspaOptOutOptionMode} of setMspaOptOutOptionMode method must be a non-negative integer between 0 and 2`;
-      }
-      this.#mspaOptOutOptionMode = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(mspaOptOutOptionMode)
-        .build();
+    setMspaOptOutOptionMode(value: number) {
+      this.#validateValue(value);
+      this.#mspaOptOutOptionModeBuilder.setValue(value);
+
       return this;
     }
 
-    setMspaServiceProviderMode(mspaServiceProviderMode: number) {
-      if (mspaServiceProviderMode < 0 || mspaServiceProviderMode > 2) {
-        throw `param value ${mspaServiceProviderMode} of setMspaServiceProviderMode method must be a non-negative integer between 0 and 2`;
-      }
-      this.#mspaServiceProviderMode = new GPPIntegerFixedLength.Builder()
-        .setLength(2)
-        .setValue(mspaServiceProviderMode)
-        .build();
+    setMspaServiceProviderMode(value: number) {
+      this.#validateValue(value);
+      this.#mspaServiceProviderModeBuilder.setValue(value);
+
       return this;
+    }
+
+    #validateValue(value: number) {
+      if (value < 0 || value > 2) {
+        throw `param value must be a non-negative integer between 0 and 2`;
+      }
     }
 
     build() {
       const gppString = new UspcaSectionEncoder(
-        this.#saleOptOutNotice,
-        this.#sharingOptOutNotice,
-        this.#sensitiveDataLimitUseNotice,
-        this.#saleOptOut,
-        this.#sharingOptOut,
-        this.#sensitiveDataProcessing,
-        this.#knownChildSensitiveDataConsents,
-        this.#personalDataConsents,
-        this.#mspaCoveredTransaction,
-        this.#mspaOptOutOptionMode,
-        this.#mspaServiceProviderMode
+        this.#saleOptOutNoticeBuilder.build(),
+        this.#sharingOptOutNoticeBuilder.build(),
+        this.#sensitiveDataLimitUseNoticeBuilder.build(),
+        this.#saleOptOutBuilder.build(),
+        this.#sharingOptOutBuilder.build(),
+        this.#sensitiveDataProcessingBuilder.build(),
+        this.#knownChildSensitiveDataConsentsBuilder.build(),
+        this.#personalDataConsentsBuilder.build(),
+        this.#mspaCoveredTransactionBuilder.build(),
+        this.#mspaOptOutOptionModeBuilder.build(),
+        this.#mspaServiceProviderModeBuilder.build()
       );
       return gppString;
     }

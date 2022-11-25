@@ -192,17 +192,7 @@ test.each([
   [2, "0000010000000000101010101010101010000000000000"],
 ])("all setSensitiveDataProcessing Notices = %i", (value, expected) => {
   const uspca = new UspcaSectionEncoder.Builder()
-    .setSensitiveDataProcessing([
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-    ])
+    .setSensitiveDataProcessing(Array(9).fill(value))
     .build();
   expect(uspca.encode2BitStr()).toBe(expected);
 });
@@ -225,17 +215,6 @@ test("Calling setSensitiveDataProcessing with wrong values", () => {
   }).toThrow();
 });
 
-test.each([
-  [0, "0000010000000000000000000000000000000000000000"],
-  [1, "0000010000000000000000000000000000010100000000"],
-  [2, "0000010000000000000000000000000000101000000000"],
-])("all setKnownChildSensitiveDataConsents Notices = %i", (value, expected) => {
-  const uspca = new UspcaSectionEncoder.Builder()
-    .setKnownChildSensitiveDataConsents([value, value])
-    .build();
-  expect(uspca.encode2BitStr()).toBe(expected);
-});
-
 test("Calling setKnownChildSensitiveDataConsents with wrong array size", () => {
   expect(() => {
     const uspca = new UspcaSectionEncoder.Builder()
@@ -248,10 +227,30 @@ test("Calling setKnownChildSensitiveDataConsents with wrong array size", () => {
 test("Calling setKnownChildSensitiveDataConsents with wrong values", () => {
   expect(() => {
     const uspca = new UspcaSectionEncoder.Builder()
-      .setKnownChildSensitiveDataConsents([4, 0, 0, 0, 0, 0, 0, 0, 0])
+      .setKnownChildSensitiveDataConsents([4, 0])
       .build();
     uspca.encode2BitStr();
   }).toThrow();
+});
+
+test("Calling setKnownChildSensitiveDataConsents with [0,0]", () => {
+  const uspca = new UspcaSectionEncoder.Builder()
+    .setKnownChildSensitiveDataConsents([0, 0])
+    .build();
+  expect(uspca.encode2BitStr()).toBe(
+    "0000010000000000000000000000000000000000000000"
+  );
+});
+
+test.each([
+  [0, "0000010000000000000000000000000000000000000000"],
+  [1, "0000010000000000000000000000000000010100000000"],
+  [2, "0000010000000000000000000000000000101000000000"],
+])("all setKnownChildSensitiveDataConsents Notices = %i", (value, expected) => {
+  const uspca = new UspcaSectionEncoder.Builder()
+    .setKnownChildSensitiveDataConsents(Array(2).fill(value))
+    .build();
+  expect(uspca.encode2BitStr()).toBe(expected);
 });
 
 test.each([
@@ -265,18 +264,8 @@ test.each([
     .setSensitiveDataLimitUseNotice(value)
     .setSaleOptOut(value)
     .setSharingOptOut(value)
-    .setSensitiveDataProcessing([
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-      value,
-    ])
-    .setKnownChildSensitiveDataConsents([value, value])
+    .setSensitiveDataProcessing(Array(9).fill(value))
+    .setKnownChildSensitiveDataConsents(Array(2).fill(value))
     .setPersonalDataConsents(value)
     .setMspaCoveredTransaction(value)
     .setMspaOptOutOptionMode(value)

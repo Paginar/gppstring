@@ -12,10 +12,10 @@
     "test:once": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint",
     "prebuild": "rm -rf lib",
-    "typecheck": "tsc --noEmit --w",
-    "typecheck:once": "tsc --noEmit",
+    "tsc": "tsc --noEmit --w",
+    "tsc:once": "tsc --noEmit",
     "build": "parcel build",
-    "preversion": "npm run lint && npm run typecheck:once && npm run test:once",
+    "preversion": "npm run lint && npm run tsc:once && npm run test:once",
     "version": "npm run build && git add .",
     "postversion": "git push && git push --tags"
   },

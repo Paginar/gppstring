@@ -68,7 +68,7 @@ class GPPIntegerFixedLength {
     #value = 0;
     #length = 1;
 
-    setLength(length = 1) {
+    setLength(length: number) {
       if (!Number.isInteger(length) && length > 1) {
         throw "length param must be a positive integer";
       }
@@ -87,8 +87,7 @@ class GPPIntegerFixedLength {
     }
 
     build() {
-      const integer = new GPPIntegerFixedLength(this.#value, this.#length);
-      return integer;
+      return new GPPIntegerFixedLength(this.#value, this.#length);
     }
 
     #checkIfTruncated(value: number, length: number) {
@@ -139,8 +138,7 @@ class GPPIntegerFibonacci {
     }
 
     build() {
-      const integer = new GPPIntegerFibonacci(this.#value);
-      return integer;
+      return new GPPIntegerFibonacci(this.#value);
     }
   };
 
@@ -217,9 +215,9 @@ class GPPDatetime {
   static Builder = class {
     #value = new Date();
 
-    setValue(value: Date) {
+    setValue(value?: Date) {
       if (!(value instanceof Date)) {
-        throw "value param must be an Date";
+        throw "value must be a Date";
       }
       this.#value = value;
       return this;
@@ -441,17 +439,41 @@ class GPPNBitfield {
 
   static Builder = class {
     #nBits: GPPIntegerFixedLength[] = [];
+    #numBits: number | null = null;
+    #bitSize: number | null = null;
 
-    setNBits(nBitSize: number, nBitValues: number[]) {
-      if (!Number.isInteger(nBitSize) && nBitSize > 0) {
-        throw "nBitSize param must be a positive integer";
+    setLength(length: number) {
+      if (!Number.isInteger(length) && length > 0) {
+        throw "length param must be a positive integer";
       }
+      this.#numBits = length;
+      return this;
+    }
 
-      for (let i = 0; i < nBitValues.length; i++) {
+    setBitSize(bitSize: number) {
+      if (!Number.isInteger(bitSize) && bitSize > 0) {
+        throw "bitSize param must be a positive integer";
+      }
+      this.#bitSize = bitSize;
+      return this;
+    }
+
+    setValues(values: number[]) {
+      if (this.#bitSize === null) {
+        throw `You must initialize the GPPBitfield by calling the setBitSize method before calling the setValues method`;
+      }
+      if (this.#numBits === null) {
+        throw `You must initialize the GPPBitfield by calling the setLength method before calling the setValues method`;
+      }
+      if (!Array.isArray(values) || values.length !== this.#numBits) {
+        throw `nBitValues must be an Array of length ${this.#numBits}`;
+      }
+      this.#nBits = [];
+      for (let i = 0; i < values.length; i++) {
         this.#nBits.push(
           new GPPIntegerFixedLength.Builder()
-            .setLength(nBitSize)
-            .setValue(nBitValues[i])
+            .setLength(this.#bitSize)
+            .setValue(values[i])
             .build()
         );
       }
@@ -484,29 +506,74 @@ class GPPNBitfield {
 }
 
 //
+// GPPBitfield
+//
+
+class GPPBitfield {
+  #bitField: GPPNBitfield;
+
+  static Builder = class {
+    #bitFieldBuilder = new GPPNBitfield.Builder().setBitSize(1);
+    #numBits: number | null = null;
+
+    setLength(length: number) {
+      if (!Number.isInteger(length) && length > 0) {
+        throw "numBits param must be a positive integer";
+      }
+      this.#numBits = length;
+      return this;
+    }
+
+    setValues(values: number[]) {
+      this.#bitFieldBuilder.setLength(values.length).setValues(values);
+      return this;
+    }
+
+    build() {
+      return new GPPBitfield(this.#bitFieldBuilder.build());
+    }
+  };
+
+  constructor(bitField: GPPNBitfield) {
+    this.#bitField = bitField;
+  }
+
+  toString() {
+    return JSON.stringify({
+      nBits: this.#bitField,
+    });
+  }
+
+  encode2BitStr() {
+    return this.#bitField.encode2BitStr();
+  }
+}
+
+//
 // OptimizedIntRange
 //
 
 class GPPOptimizedIntRange {
   #numItems = 0;
   #isRangeEncoding: boolean | null = null;
-  #RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null = null;
+  #RangeOrBitfieldData: GPPRangeInteger | GPPBitfield | null = null;
 
   static Builder = class {
     #numItems = 0;
     #isRangeEncoding: boolean | null = null;
-    #RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null = null;
+    #RangeOrBitfieldData: GPPRangeInteger | GPPBitfield | null = null;
 
-    setBitfieldData(nBitValues: number[]) {
-      this.#numItems = nBitValues.length;
+    setValuesAsBitfield(values: number[]) {
+      this.#numItems = values.length;
       this.#isRangeEncoding = false;
-      this.#RangeOrBitfieldData = new GPPNBitfield.Builder()
-        .setNBits(1, nBitValues)
+      this.#RangeOrBitfieldData = new GPPBitfield.Builder()
+        .setLength(values.length)
+        .setValues(values)
         .build();
       return this;
     }
 
-    setRangeData(from: number, to: number) {
+    setValuesAsRange(from: number, to: number) {
       this.#numItems = to;
       this.#isRangeEncoding = true;
       this.#RangeOrBitfieldData = new GPPRangeInteger.Builder()
@@ -528,7 +595,7 @@ class GPPOptimizedIntRange {
   constructor(
     numItems: number,
     isRangeEncoding: boolean | null,
-    RangeOrBitfieldData: GPPRangeInteger | GPPNBitfield | null
+    RangeOrBitfieldData: GPPRangeInteger | GPPBitfield | null
   ) {
     this.#numItems = numItems;
     this.#isRangeEncoding = isRangeEncoding;
@@ -565,6 +632,41 @@ class GPPOptimizedIntRange {
   }
 }
 
+//
+// GPPCountryCode
+//
+
+class GPPCountryCode {
+  #value = "";
+
+  static Builder = class {
+    #value = "";
+
+    setValue(value: string) {
+      this.#value = value;
+      return this;
+    }
+
+    build() {
+      return new GPPCountryCode(this.#value);
+    }
+  };
+
+  constructor(value: string) {
+    this.#value = value;
+  }
+
+  toString() {
+    return JSON.stringify({
+      value: this.#value,
+    });
+  }
+
+  encode2BitStr() {
+    return this.#value;
+  }
+}
+
 export {
   GPPBoolean,
   GPPIntegerFixedLength,
@@ -574,5 +676,7 @@ export {
   GPPRangeInteger,
   GPPRangeFibonacci,
   GPPNBitfield,
+  GPPBitfield,
   GPPOptimizedIntRange,
+  GPPCountryCode,
 };

@@ -7,7 +7,9 @@ import {
   GPPRangeInteger,
   GPPRangeFibonacci,
   GPPNBitfield,
+  GPPBitfield,
   GPPOptimizedIntRange,
+  GPPCountryCode,
 } from "./data-types";
 
 //
@@ -208,32 +210,148 @@ test("GPPRangeFibonacci of [3,5,6,7,8] 1 single value: 3, 1 group values: 5-8", 
 });
 
 //
-// NBitField
+// BitField
 //
 
-test("Create a GPPNBitfield (NBitSize=2,numBits=1), with value Bit1=0", () => {
-  expect(
-    new GPPNBitfield.Builder().setNBits(2, [0]).build().encode2BitStr()
-  ).toBe("00");
-});
-
-test("Create a GPPNBitfield (NBitSize=2,numBits=1), with value Bit1=2", () => {
-  expect(
-    new GPPNBitfield.Builder().setNBits(2, [2]).build().encode2BitStr()
-  ).toBe("10");
-});
-
-test("Create a GPPNBitfield (NBitSize=2,numBits=1), with value Bit1=5, must throw", () => {
+test("Create a GPPBitfield but forgot to set the length, must throw", () => {
   expect(() => {
-    new GPPNBitfield.Builder().setNBits(2, [5]).build().encode2BitStr();
+    new GPPBitfield.Builder().setValues([5]).build().encode2BitStr();
   }).toThrow();
 });
 
-test("Create a GPPNBitfield (NBitSize=2,numBits=2), with values Bit1=2,Bit2=1", () => {
+test("Create a GPPBitfield (length=1), with value [2], must throw", () => {
+  expect(() => {
+    new GPPBitfield.Builder()
+      .setLength(1)
+      .setValues([2])
+      .build()
+      .encode2BitStr();
+  }).toThrow();
+});
+
+test("Create a GPPBitfield (length=2), with values [0,0]", () => {
   expect(
-    new GPPNBitfield.Builder().setNBits(2, [2, 1]).build().encode2BitStr()
+    new GPPBitfield.Builder()
+      .setLength(2)
+      .setValues([0, 0])
+      .build()
+      .encode2BitStr()
+  ).toBe("00");
+});
+
+test("Create a GPPBitfield (length=2), with values [0,1]", () => {
+  expect(
+    new GPPBitfield.Builder()
+      .setLength(2)
+      .setValues([0, 1])
+      .build()
+      .encode2BitStr()
+  ).toBe("01");
+});
+
+test("Create a GPPBitfield (length=9), with values Array(9).fill(0)", () => {
+  expect(
+    new GPPBitfield.Builder()
+      .setLength(9)
+      .setValues(Array(9).fill(0))
+      .build()
+      .encode2BitStr()
+  ).toBe("000000000");
+});
+
+//
+// NBitField
+//
+
+test("Create a GPPNBitfield but forgot to set the length, must throw", () => {
+  expect(() => {
+    new GPPNBitfield.Builder()
+      .setBitSize(2)
+      .setValues([5])
+      .build()
+      .encode2BitStr();
+  }).toThrow();
+});
+
+test("Create a GPPNBitfield but forgot to set the bitSize, must throw", () => {
+  expect(() => {
+    new GPPNBitfield.Builder()
+      .setLength(2)
+      .setValues([5])
+      .build()
+      .encode2BitStr();
+  }).toThrow();
+});
+
+test("Create a GPPNBitfield (length=1), with value [0]", () => {
+  expect(
+    new GPPNBitfield.Builder()
+      .setLength(1)
+      .setBitSize(2)
+      .setValues([0])
+      .build()
+      .encode2BitStr()
+  ).toBe("00");
+});
+
+test("Create a GPPNBitfield (length=1), with value [2]", () => {
+  expect(
+    new GPPNBitfield.Builder()
+      .setLength(1)
+      .setBitSize(2)
+      .setValues([2])
+      .build()
+      .encode2BitStr()
+  ).toBe("10");
+});
+
+test("Create a GPPNBitfield (length=1), with value [5], must throw", () => {
+  expect(() => {
+    new GPPNBitfield.Builder()
+      .setLength(1)
+      .setBitSize(2)
+      .setValues([5])
+      .build()
+      .encode2BitStr();
+  }).toThrow();
+});
+
+test("Create a GPPNBitfield (length=2, bitSize=2), with values [2,1]", () => {
+  expect(
+    new GPPNBitfield.Builder()
+      .setLength(2)
+      .setBitSize(2)
+      .setValues([2, 1])
+      .build()
+      .encode2BitStr()
   ).toBe("1001");
 });
+
+test("Create a GPPNBitfield (length=2, bitSize=2), with values [0,0]", () => {
+  expect(
+    new GPPNBitfield.Builder()
+      .setLength(2)
+      .setBitSize(2)
+      .setValues([0, 0])
+      .build()
+      .encode2BitStr()
+  ).toBe("0000");
+});
+
+test("Create a GPPNBitfield (length=9, bitSize=2), with values Array(9).fill(0)", () => {
+  expect(
+    new GPPNBitfield.Builder()
+      .setLength(9)
+      .setBitSize(2)
+      .setValues(Array(9).fill(0))
+      .build()
+      .encode2BitStr()
+  ).toBe("000000000000000000");
+});
+
+//
+// GPPOptimizedIntRange
+//
 
 test("Create a GPPOptimizedIntRange", () => {
   expect(new GPPOptimizedIntRange.Builder().build().encode2BitStr()).toBe("");
@@ -242,7 +360,7 @@ test("Create a GPPOptimizedIntRange", () => {
 test("Create a GPPOptimizedIntRange, with Bitfield([0]) ", () => {
   expect(
     new GPPOptimizedIntRange.Builder()
-      .setBitfieldData([0])
+      .setValuesAsBitfield([0])
       .build()
       .encode2BitStr()
   ).toBe("000000000000000100");
@@ -251,7 +369,7 @@ test("Create a GPPOptimizedIntRange, with Bitfield([0]) ", () => {
 test("Create a GPPOptimizedIntRange, with Bitfield([0,1]) ", () => {
   expect(
     new GPPOptimizedIntRange.Builder()
-      .setBitfieldData([0, 1])
+      .setValuesAsBitfield([0, 1])
       .build()
       .encode2BitStr()
   ).toBe("0000000000000010001");
@@ -260,7 +378,7 @@ test("Create a GPPOptimizedIntRange, with Bitfield([0,1]) ", () => {
 test("Create a GPPOptimizedIntRange, with Range(10,20) ", () => {
   expect(
     new GPPOptimizedIntRange.Builder()
-      .setRangeData(10, 20)
+      .setValuesAsRange(10, 20)
       .build()
       .encode2BitStr()
   ).toBe("00000000000101001000000000001100000000000010100000000000001010");
