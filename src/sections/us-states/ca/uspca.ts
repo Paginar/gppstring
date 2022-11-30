@@ -22,49 +22,39 @@ class UspcaSectionEncoder implements Section {
   #mspaOptOutOptionMode: GPPIntegerFixedLength;
   #mspaServiceProviderMode: GPPIntegerFixedLength;
 
-  static Builder = class {
+  static Builder = class UspcaSectionEncoderBuilder {
     #saleOptOutNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #sharingOptOutNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #sensitiveDataLimitUseNoticeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #saleOptOutBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #sharingOptOutBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #sensitiveDataProcessingBuilder = new GPPNBitfield.Builder()
       .setLength(9)
       .setBitSize(2)
       .setValues(Array(9).fill(0));
-
     #knownChildSensitiveDataConsentsBuilder = new GPPNBitfield.Builder()
       .setLength(2)
       .setBitSize(2)
       .setValues(Array(2).fill(0));
-
     #personalDataConsentsBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #mspaCoveredTransactionBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #mspaOptOutOptionModeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);
-
     #mspaServiceProviderModeBuilder = new GPPIntegerFixedLength.Builder()
       .setLength(2)
       .setValue(0);

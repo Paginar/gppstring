@@ -8,11 +8,14 @@ import {
   GPPBitfield,
 } from "../../core/data-types";
 import { encodeBitStr2Base64Websafe } from "../../core//utils";
-import { Section } from "../../core/section";
+import { Section, Segment } from "../../core/section";
 
 const GPP_VERSION = 2;
 
-class TCFEuSectionEncoder implements Section {
+//
+// Core Section
+//
+class TCFEUSectionEncoder implements Section {
   #gppSectionID = 2;
   #clientSideAPIPrefix = "tcfeuv2";
   #version = new GPPIntegerFixedLength.Builder()
@@ -40,18 +43,12 @@ class TCFEuSectionEncoder implements Section {
   #purposeID: GPPIntegerFixedLength;
   #restrictionType: GPPIntegerFixedLength;
   #pubRestrictionEntry: GPPOptimizedIntRange;
-  #hasDisclosedVendorsSegment: boolean;
-  #disclosedVendorsSegmentType: GPPIntegerFixedLength;
-  #disclosedVendors: GPPOptimizedIntRange | null;
-  #hasPubPurposesSegment: boolean;
-  #pubPurposesSegmentType: GPPIntegerFixedLength;
-  #pubPurposesConsent: GPPBitfield | null;
-  #pubPurposesLITransparency: GPPBitfield | null;
-  #numCustomPurposes: GPPIntegerFixedLength | null;
-  #customPurposesConsent: GPPBitfield | null;
-  #customPurposesLITransparency: GPPBitfield | null;
+  #disclosedVendorsSegmentEncoder: TCFEUDisclosedVendorsSegmentEncoder | null =
+    null;
+  #pubPurposesSegmentEncoder: TCFEUPublisherPurposesSegmentEncoder | null =
+    null;
 
-  static Builder = class {
+  static Builder = class TCFEuSectionEncoderBuilder {
     #createdBuilder = new GPPDatetime.Builder().setValue(new Date());
     #lastUpdatedBuilder = new GPPDatetime.Builder().setValue(new Date());
     #cmpIDBuilder = new GPPIntegerFixedLength.Builder()
@@ -98,31 +95,10 @@ class TCFEuSectionEncoder implements Section {
       .setValue(0);
     #pubRestrictionEntryBuilder =
       new GPPOptimizedIntRange.Builder().setValuesAsBitfield([0]);
-    #hasDisclosedVendorsSegmentBuilder = false;
-    #disclosedVendorsSegmentTypeBuilder = new GPPIntegerFixedLength.Builder()
-      .setLength(3)
-      .setValue(1);
-    #disclosedVendorsBuilder =
-      new GPPOptimizedIntRange.Builder().setValuesAsBitfield([0]);
-    #hasPubPurposesSegmentBuilder = false;
-    #pubPurposesSegmentTypeBuilder = new GPPIntegerFixedLength.Builder()
-      .setLength(3)
-      .setValue(3);
-    #pubPurposesConsentBuilder = new GPPBitfield.Builder()
-      .setLength(24)
-      .setValues(Array(24).fill(0));
-    #pubPurposesLITransparencyBuilder = new GPPBitfield.Builder()
-      .setLength(24)
-      .setValues(Array(24).fill(0));
-    #numCustomPurposesBuilder = new GPPIntegerFixedLength.Builder()
-      .setLength(6)
-      .setValue(0);
-    #customPurposesConsentBuilder = new GPPBitfield.Builder()
-      .setLength(1)
-      .setValues(Array(1).fill(0));
-    #customPurposesLITransparencyBuilder = new GPPBitfield.Builder()
-      .setLength(1)
-      .setValues(Array(1).fill(0));
+    #disclosedVendorsSegmentEncoder: TCFEUDisclosedVendorsSegmentEncoder | null =
+      null;
+    #pubPurposesSegmentEncoder: TCFEUPublisherPurposesSegmentEncoder | null =
+      null;
 
     setCreated(value: Date) {
       this.#createdBuilder.setValue(value);
@@ -208,50 +184,19 @@ class TCFEuSectionEncoder implements Section {
       this.#pubRestrictionEntryBuilder.setValuesAsBitfield(values);
       return this;
     }
-    setHasDisclosedVendorsSegment(value: boolean) {
-      this.#hasDisclosedVendorsSegmentBuilder = value;
+    setDisclosedVendorsSegmentEncoder(
+      value: TCFEUDisclosedVendorsSegmentEncoder
+    ) {
+      this.#disclosedVendorsSegmentEncoder = value;
       return this;
     }
-    setDisclosedVendorsSegmentType(value: number) {
-      this.#disclosedVendorsSegmentTypeBuilder.setLength(3).setValue(value);
-      return this;
-    }
-    setDisclosedVendorsAsBitfield(values: number[]) {
-      this.#disclosedVendorsBuilder =
-        new GPPOptimizedIntRange.Builder().setValuesAsBitfield(values);
-      return this;
-    }
-    setHasPubPurposesSegment(value: boolean) {
-      this.#hasPubPurposesSegmentBuilder = value;
-      return this;
-    }
-    setPubPurposesSegmentType(value: number) {
-      this.#pubPurposesSegmentTypeBuilder.setLength(3).setValue(value);
-      return this;
-    }
-    setPubPurposesConsent(values: number[]) {
-      this.#pubPurposesConsentBuilder.setValues(values);
-      return this;
-    }
-    setPubPurposesLITransparency(values: number[]) {
-      this.#pubPurposesLITransparencyBuilder.setValues(values);
-      return this;
-    }
-    setNumCustomPurposes(value: number) {
-      this.#numCustomPurposesBuilder.setValue(value);
-      return this;
-    }
-    setCustomPurposesConsent(values: number[]) {
-      this.#customPurposesConsentBuilder.setLength(1).setValues(values);
-      return this;
-    }
-    setCustomPurposesLITransparency(values: number[]) {
-      this.#customPurposesLITransparencyBuilder.setLength(1).setValues(values);
+    setPubPurposesSegmentEncoder(value: TCFEUPublisherPurposesSegmentEncoder) {
+      this.#pubPurposesSegmentEncoder = value;
       return this;
     }
 
     build() {
-      return new TCFEuSectionEncoder(
+      return new TCFEUSectionEncoder(
         this.#createdBuilder.build(),
         this.#lastUpdatedBuilder.build(),
         this.#cmpIDBuilder.build(),
@@ -273,16 +218,8 @@ class TCFEuSectionEncoder implements Section {
         this.#purposeIDBuilder.build(),
         this.#restrictionTypeBuilder.build(),
         this.#pubRestrictionEntryBuilder.build(),
-        this.#hasDisclosedVendorsSegmentBuilder,
-        this.#disclosedVendorsSegmentTypeBuilder.build(),
-        this.#disclosedVendorsBuilder.build(),
-        this.#hasPubPurposesSegmentBuilder,
-        this.#pubPurposesSegmentTypeBuilder.build(),
-        this.#pubPurposesConsentBuilder.build(),
-        this.#pubPurposesLITransparencyBuilder.build(),
-        this.#numCustomPurposesBuilder.build(),
-        this.#customPurposesConsentBuilder.build(),
-        this.#customPurposesLITransparencyBuilder.build()
+        this.#disclosedVendorsSegmentEncoder,
+        this.#pubPurposesSegmentEncoder
       );
     }
   };
@@ -309,16 +246,8 @@ class TCFEuSectionEncoder implements Section {
     purposeID: GPPIntegerFixedLength,
     restrictionType: GPPIntegerFixedLength,
     pubRestrictionEntry: GPPOptimizedIntRange,
-    hasDisclosedVendorsSegment: boolean,
-    disclosedVendorsSegmentType: GPPIntegerFixedLength,
-    disclosedVendors: GPPOptimizedIntRange | null,
-    hasPubPurposesSegment: boolean,
-    pubPurposesSegmentType: GPPIntegerFixedLength,
-    pubPurposesConsent: GPPBitfield,
-    pubPurposesLITransparency: GPPBitfield,
-    numCustomPurposes: GPPIntegerFixedLength,
-    customPurposesConsent: GPPBitfield,
-    customPurposesLITransparency: GPPBitfield
+    disclosedVendorsSegmentEncoder: TCFEUDisclosedVendorsSegmentEncoder | null,
+    pubPurposesSegmentEncoder: TCFEUPublisherPurposesSegmentEncoder | null
   ) {
     this.#created = created;
     this.#lastUpdated = lastUpdated;
@@ -341,16 +270,8 @@ class TCFEuSectionEncoder implements Section {
     this.#purposeID = purposeID;
     this.#restrictionType = restrictionType;
     this.#pubRestrictionEntry = pubRestrictionEntry;
-    this.#hasDisclosedVendorsSegment = hasDisclosedVendorsSegment;
-    this.#disclosedVendorsSegmentType = disclosedVendorsSegmentType;
-    this.#disclosedVendors = disclosedVendors;
-    this.#hasPubPurposesSegment = hasPubPurposesSegment;
-    this.#pubPurposesSegmentType = pubPurposesSegmentType;
-    this.#pubPurposesConsent = pubPurposesConsent;
-    this.#pubPurposesLITransparency = pubPurposesLITransparency;
-    this.#numCustomPurposes = numCustomPurposes;
-    this.#customPurposesConsent = customPurposesConsent;
-    this.#customPurposesLITransparency = customPurposesLITransparency;
+    this.#disclosedVendorsSegmentEncoder = disclosedVendorsSegmentEncoder;
+    this.#pubPurposesSegmentEncoder = pubPurposesSegmentEncoder;
   }
 
   encode2BitStr() {
@@ -377,6 +298,14 @@ class TCFEuSectionEncoder implements Section {
     bitStr += this.#purposeID.encode2BitStr();
     bitStr += this.#restrictionType.encode2BitStr();
     bitStr += this.#pubRestrictionEntry.encode2BitStr();
+    if (this.#disclosedVendorsSegmentEncoder !== null) {
+      bitStr += ".";
+      bitStr += this.#disclosedVendorsSegmentEncoder.encode2BitStr();
+    }
+    if (this.#pubPurposesSegmentEncoder !== null) {
+      bitStr += ".";
+      bitStr += this.#pubPurposesSegmentEncoder.encode2BitStr();
+    }
     return bitStr;
   }
 
@@ -393,4 +322,195 @@ class TCFEuSectionEncoder implements Section {
   }
 }
 
-export { TCFEuSectionEncoder };
+//
+// Disclosed Vendors Segment
+//
+
+class TCFEUDisclosedVendorsSegmentEncoder implements Segment {
+  #disclosedVendorsSegmentType: GPPIntegerFixedLength;
+  #disclosedVendors: GPPOptimizedIntRange;
+
+  static Builder = class TCFEUDisclosedVendorsSegmentEncoderBuilder {
+    #disclosedVendorsSegmentTypeBuilder = new GPPIntegerFixedLength.Builder()
+      .setLength(3)
+      .setValue(1);
+    #disclosedVendorsBuilder = new GPPOptimizedIntRange.Builder();
+
+    setDisclosedVendorsAsBitfield(values: number[]) {
+      this.#disclosedVendorsBuilder =
+        new GPPOptimizedIntRange.Builder().setValuesAsBitfield(values);
+      return this;
+    }
+
+    setDisclosedVendorsAsRange(from: number, to: number) {
+      this.#disclosedVendorsBuilder =
+        new GPPOptimizedIntRange.Builder().setValuesAsRange(from, to);
+      return this;
+    }
+
+    build() {
+      return new TCFEUDisclosedVendorsSegmentEncoder(
+        this.#disclosedVendorsSegmentTypeBuilder.build(),
+        this.#disclosedVendorsBuilder.build()
+      );
+    }
+  };
+
+  constructor(
+    disclosedVendorsSegmentType: GPPIntegerFixedLength,
+    disclosedVendors: GPPOptimizedIntRange
+  ) {
+    this.#disclosedVendorsSegmentType = disclosedVendorsSegmentType;
+    this.#disclosedVendors = disclosedVendors;
+  }
+
+  encode2BitStr() {
+    let bitStr = "";
+    bitStr += this.#disclosedVendorsSegmentType.encode2BitStr();
+    bitStr += this.#disclosedVendors.encode2BitStr();
+    return bitStr;
+  }
+
+  encode(): string {
+    return encodeBitStr2Base64Websafe(this.encode2BitStr());
+  }
+}
+
+//
+// TCF EU Publisher Purposes Segment
+//
+
+class TCFEUPublisherPurposesSegmentEncoder implements Segment {
+  #pubPurposesSegmentType: GPPIntegerFixedLength;
+  #pubPurposesConsent: GPPBitfield;
+  #pubPurposesLITransparency: GPPBitfield;
+  #numCustomPurposes: GPPIntegerFixedLength;
+  #customPurposesConsent: GPPBitfield;
+  #customPurposesLITransparency: GPPBitfield;
+
+  static Builder = class TCFEUPublisherPurposesSegmentEncoderBuilder {
+    #pubPurposesSegmentTypeBuilder = new GPPIntegerFixedLength.Builder()
+      .setLength(3)
+      .setValue(3);
+    #pubPurposesConsentBuilder = new GPPBitfield.Builder()
+      .setLength(24)
+      .setValues(Array(24).fill(0));
+    #pubPurposesLITransparencyBuilder = new GPPBitfield.Builder()
+      .setLength(24)
+      .setValues(Array(24).fill(0));
+    #numCustomPurposes: number | null = null;
+    #numCustomPurposesBuilder = new GPPIntegerFixedLength.Builder().setLength(
+      6
+    );
+    #customPurposesConsent: number[] | null = null;
+    #customPurposesConsentBuilder = new GPPBitfield.Builder();
+    #customPurposesLITransparency: number[] | null = null;
+    #customPurposesLITransparencyBuilder = new GPPBitfield.Builder();
+
+    setPubPurposesSegmentType(value: number) {
+      this.#pubPurposesSegmentTypeBuilder.setLength(3).setValue(value);
+      return this;
+    }
+    setPubPurposesConsent(values: number[]) {
+      this.#pubPurposesConsentBuilder.setValues(values);
+      return this;
+    }
+    setPubPurposesLITransparency(values: number[]) {
+      this.#pubPurposesLITransparencyBuilder.setValues(values);
+      return this;
+    }
+    setNumCustomPurposes(value: number) {
+      if (!(Number.isInteger(value) && value > 0)) {
+        throw "value param must be a positive integer";
+      }
+      this.#numCustomPurposes = value;
+      this.#numCustomPurposesBuilder.setValue(value);
+      return this;
+    }
+    setCustomPurposesConsent(values: number[]) {
+      if (this.#numCustomPurposes === null) {
+        throw `You must initialize the TCFEUPublisherPurposesSegmentEncoder by calling the setNumCustomPurposes method before calling the setCustomPurposesConsent method`;
+      }
+      if (!Array.isArray(values) || values.length !== this.#numCustomPurposes) {
+        throw `values must be an Array of length ${this.#numCustomPurposes}`;
+      }
+
+      this.#customPurposesConsent = values;
+      this.#customPurposesConsentBuilder = new GPPBitfield.Builder()
+        .setLength(this.#numCustomPurposes)
+        .setValues(values);
+      return this;
+    }
+    setCustomPurposesLITransparency(values: number[]) {
+      if (this.#numCustomPurposes === null) {
+        throw `You must initialize the TCFEUPublisherPurposesSegmentEncoder by calling the setNumCustomPurposes method before calling the setCustomPurposesLITransparency method`;
+      }
+      if (!Array.isArray(values) || values.length !== this.#numCustomPurposes) {
+        throw `values must be an Array of length ${this.#numCustomPurposes}`;
+      }
+      this.#customPurposesLITransparency = values;
+      this.#customPurposesLITransparencyBuilder = new GPPBitfield.Builder()
+        .setLength(this.#numCustomPurposes)
+        .setValues(values);
+      return this;
+    }
+
+    build() {
+      if (this.#numCustomPurposes === null) {
+        throw `You must initialize the TCFEUPublisherPurposesSegmentEncoder by calling the setNumCustomPurposes method before calling the build method`;
+      }
+      if (
+        this.#customPurposesConsent?.length === 0 ||
+        this.#customPurposesLITransparency?.length === 0
+      ) {
+        throw `You must initialize the TCFEUPublisherPurposesSegmentEncoder by calling the setCustomPurposesConsent & setCustomPurposesLITransparency methods before calling the build method`;
+      }
+
+      return new TCFEUPublisherPurposesSegmentEncoder(
+        this.#pubPurposesSegmentTypeBuilder.build(),
+        this.#pubPurposesConsentBuilder.build(),
+        this.#pubPurposesLITransparencyBuilder.build(),
+        this.#numCustomPurposesBuilder.build(),
+        this.#customPurposesConsentBuilder?.build() || null,
+        this.#customPurposesLITransparencyBuilder?.build()
+      );
+    }
+  };
+
+  constructor(
+    pubPurposesSegmentType: GPPIntegerFixedLength,
+    pubPurposesConsent: GPPBitfield,
+    pubPurposesLITransparency: GPPBitfield,
+    numCustomPurposes: GPPIntegerFixedLength,
+    customPurposesConsent: GPPBitfield,
+    customPurposesLITransparency: GPPBitfield
+  ) {
+    this.#pubPurposesSegmentType = pubPurposesSegmentType;
+    this.#pubPurposesConsent = pubPurposesConsent;
+    this.#pubPurposesLITransparency = pubPurposesLITransparency;
+    this.#numCustomPurposes = numCustomPurposes;
+    this.#customPurposesConsent = customPurposesConsent;
+    this.#customPurposesLITransparency = customPurposesLITransparency;
+  }
+
+  encode2BitStr() {
+    let bitStr = "";
+    bitStr += this.#pubPurposesSegmentType.encode2BitStr();
+    bitStr += this.#pubPurposesConsent.encode2BitStr();
+    bitStr += this.#pubPurposesLITransparency.encode2BitStr();
+    bitStr += this.#numCustomPurposes.encode2BitStr();
+    bitStr += this.#customPurposesConsent.encode2BitStr();
+    bitStr += this.#customPurposesLITransparency.encode2BitStr();
+    return bitStr;
+  }
+
+  encode(): string {
+    return encodeBitStr2Base64Websafe(this.encode2BitStr());
+  }
+}
+
+export {
+  TCFEUSectionEncoder,
+  TCFEUDisclosedVendorsSegmentEncoder,
+  TCFEUPublisherPurposesSegmentEncoder,
+};

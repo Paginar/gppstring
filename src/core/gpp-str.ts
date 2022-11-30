@@ -5,7 +5,7 @@ class GPPStringEncoder {
   #header: GPPHeaderEncoder;
   #sections: Map<number, Section> = new Map();
 
-  static Builder = class {
+  static Builder = class GPPStringEncoderBuilder {
     #headerBuilder = new GPPHeaderEncoder.Builder();
     #sections: Map<number, Section> = new Map();
 

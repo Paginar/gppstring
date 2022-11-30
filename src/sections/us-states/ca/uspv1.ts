@@ -14,7 +14,7 @@ export class Uspv1SectionEncoder implements Section {
   #saleOptOut: Uspv1Values = Uspv1Values.NA;
   #lspaCoveredTransaction: Uspv1Values = Uspv1Values.NA;
 
-  static Builder = class {
+  static Builder = class Uspv1SectionEncoderBuilder {
     #noticeOptOut: Uspv1Values = Uspv1Values.NA;
     #saleOptOut: Uspv1Values = Uspv1Values.NA;
     #lspaCoveredTransaction: Uspv1Values = Uspv1Values.NA;

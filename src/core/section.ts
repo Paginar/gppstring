@@ -1,8 +1,10 @@
-interface Section {
-  getGPPSectionID(): number;
-  getClientSideAPIPrefix(): string;
+interface Segment {
   encode(): string;
   encode2BitStr(): string;
 }
+interface Section extends Segment {
+  getGPPSectionID(): number;
+  getClientSideAPIPrefix(): string;
+}
 
-export type { Section };
+export type { Section, Segment };

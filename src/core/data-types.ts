@@ -9,12 +9,12 @@ enum GPPRangeItemType {
   GROUP = "1",
 }
 
-interface GPPRangeItemSingle {
+export interface GPPRangeItemSingle {
   type: GPPRangeItemType.SINGLE;
   value: number;
 }
 
-interface GPPRangeItemGroup {
+export interface GPPRangeItemGroup {
   type: GPPRangeItemType.GROUP;
   fromValue: number;
   toValue: number;
@@ -27,7 +27,7 @@ interface GPPRangeItemGroup {
 class GPPBoolean {
   #value = false;
 
-  static Builder = class {
+  static Builder = class GPPBooleanBuilder {
     #value = false;
 
     setValue(value: boolean) {
@@ -126,7 +126,7 @@ class GPPIntegerFixedLength {
 class GPPIntegerFibonacci {
   #value = 0;
 
-  static Builder = class {
+  static Builder = class GPPIntegerFibonacciBuilder {
     #value = 0;
 
     setValue(value: number) {
@@ -166,7 +166,7 @@ class GPPIntegerFibonacci {
 class GPPStringFixedLength {
   #value = "";
 
-  static Builder = class {
+  static Builder = class GPPStringFixedLengthBuilder {
     #value = "";
 
     setValue(value: string) {
@@ -212,7 +212,7 @@ class GPPStringFixedLength {
 class GPPDatetime {
   #value = new Date();
 
-  static Builder = class {
+  static Builder = class GPPDatetimeBuilder {
     #value = new Date();
 
     setValue(value?: Date) {
@@ -254,7 +254,7 @@ class GPPDatetime {
 class GPPRangeInteger {
   #items: (GPPRangeItemSingle | GPPRangeItemGroup)[] = [];
 
-  static Builder = class {
+  static Builder = class GPPRangeIntegerBuilder {
     #items: (GPPRangeItemSingle | GPPRangeItemGroup)[] = [];
     #lastValue = 0;
 
@@ -351,7 +351,7 @@ class GPPRangeInteger {
 class GPPRangeFibonacci {
   #items: (GPPRangeItemGroup | GPPRangeItemSingle)[] = [];
 
-  static Builder = class {
+  static Builder = class GPPRangeFibonacciBuilder {
     #items: (GPPRangeItemGroup | GPPRangeItemSingle)[] = [];
     #lastValue = 0;
 
@@ -437,13 +437,13 @@ class GPPRangeFibonacci {
 class GPPNBitfield {
   #nBits: GPPIntegerFixedLength[] = [];
 
-  static Builder = class {
+  static Builder = class GPPBitfieldBuilder {
     #nBits: GPPIntegerFixedLength[] = [];
     #numBits: number | null = null;
     #bitSize: number | null = null;
 
     setLength(length: number) {
-      if (!Number.isInteger(length) && length > 0) {
+      if (!(Number.isInteger(length) && length > 0)) {
         throw "length param must be a positive integer";
       }
       this.#numBits = length;
@@ -481,8 +481,7 @@ class GPPNBitfield {
     }
 
     build() {
-      const nBitfield = new GPPNBitfield(this.#nBits);
-      return nBitfield;
+      return new GPPNBitfield(this.#nBits);
     }
   };
 
@@ -512,7 +511,7 @@ class GPPNBitfield {
 class GPPBitfield {
   #bitField: GPPNBitfield;
 
-  static Builder = class {
+  static Builder = class GPPBitfieldBuilder {
     #bitFieldBuilder = new GPPNBitfield.Builder().setBitSize(1);
     #numBits: number | null = null;
 
@@ -558,7 +557,7 @@ class GPPOptimizedIntRange {
   #isRangeEncoding: boolean | null = null;
   #RangeOrBitfieldData: GPPRangeInteger | GPPBitfield | null = null;
 
-  static Builder = class {
+  static Builder = class GPPOptimizedIntRangeBuilder {
     #numItems = 0;
     #isRangeEncoding: boolean | null = null;
     #RangeOrBitfieldData: GPPRangeInteger | GPPBitfield | null = null;
@@ -639,7 +638,7 @@ class GPPOptimizedIntRange {
 class GPPCountryCode {
   #value = "";
 
-  static Builder = class {
+  static Builder = class GPPCountryCodeBuilder {
     #value = "";
 
     setValue(value: string) {
