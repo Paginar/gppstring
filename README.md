@@ -1,3 +1,8 @@
+
+# This library is DEPRECATED and will not be maintained
+# Please use https://github.com/IABTechLab/iabgpp-es instead
+
+
 # Purpose
 
 A client library to construct [IAB's Global Privacy Platform](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform) (GPP) strings
